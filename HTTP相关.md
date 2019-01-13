@@ -1,3 +1,4 @@
+ [Github标题1](#github标题1)
 ## HTTP简介：
 HTTP协议是Hyper Text Transfer Protocol（超文本传输协议）的缩写,是用于从万维网（WWW:World Wide Web ）服务器传输超文本到本地浏览器的传送协议；基于TCP/IP通信协议来传递数据（HTML 文件, 图片文件, 查询结果等）
 ## HTTP工作原理：
@@ -122,39 +123,6 @@ POST的安全性要比GET的安全性高。
   ＜/body＞
   ＜/html＞
   ```
-  [Github标题1](#github标题1)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	### Github标题1
