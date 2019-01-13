@@ -45,7 +45,7 @@ POST的安全性要比GET的安全性高。
 ## HTTP消息结构
 * 请求报文Request：
   * 组成： 请求行（request-line）；请求头部(header)；空行(blank-line)；请求数据(request-data)
-  ![image](图片链接)
+  ![image](https://github.com/MissAquarius/ForJobHunting/blob/master/image/Request%E6%B6%88%E6%81%AF%E7%BB%93%E6%9E%84.png)
     * 请求行由请求方法、URL和HTTP协议版本3个字段组成，用空格分隔。如：GET /index.html HTTP/1.1
     * [HTTP协议的请求方法有八种](## HTTP八种请求方法)
     * 请求头部通知服务器有关于客户端请求的信息，由关键字/值对组成。每行一对，关键字和值用英文冒号“:”分隔。
