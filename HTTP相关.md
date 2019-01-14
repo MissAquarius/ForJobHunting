@@ -67,7 +67,7 @@ POST的安全性要比GET的安全性高。
   NID=31=ojj8d-IygaEtSxLgaJmqSjVhCspkviJrB6omjamNrSm8lZhKy_yMfO2M4QMRKcH1g0iQv9u-2hfBW7bUFwVh7pGaRUb0RnHcJU37y-
   FxlRugatx63JLv7CWMD6UB_O_r
   ```
-  | 字段     | 含义    |
+      | 字段     | 含义    |
       | ---------- | :-----------:  | 
       | Accept     | 客户端可识别的内容类型     | 
       | Referer     | 从哪个页面链接过来的    | 
