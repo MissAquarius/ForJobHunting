@@ -67,14 +67,14 @@ POST的安全性要比GET的安全性高。
   NID=31=ojj8d-IygaEtSxLgaJmqSjVhCspkviJrB6omjamNrSm8lZhKy_yMfO2M4QMRKcH1g0iQv9u-2hfBW7bUFwVh7pGaRUb0RnHcJU37y-
   FxlRugatx63JLv7CWMD6UB_O_r
   ```
-      | 字段     | 含义    |
-      | ---------- | :-----------:  | 
-      | Accept     | 客户端可识别的内容类型     | 
-      | Referer     | 从哪个页面链接过来的    | 
-      | User-Agent     | 产生请求的浏览器类型    | 
-      | Host     | 请求的主机名     |
-      | Connection     | 是否需要持久连接 |
-      | Cookie     | 浏览器保存的cookie信息，发送请求时会自动把该域名下的cookie值一起发给wdb服务器     |
+  字段     | 含义    
+  ---------- | :-----------:  
+  Accept     | 客户端可识别的内容类型      
+  Referer     | 从哪个页面链接过来的    
+  ser-Agent     | 产生请求的浏览器类型    
+  Host     | 请求的主机名     
+  Connection     | 是否需要持久连接 
+  Cookie     | 浏览器保存的cookie信息，发送请求时会自动把该域名下的cookie值一起发给wdb服务器     
   
   ```html
   POST /search HTTP/1.1  ---------请求行---------
@@ -100,15 +100,16 @@ POST的安全性要比GET的安全性高。
       * Status-Code表示服务器发回的响应状态代码；
       * Reason-Phrase表示状态代码的文本描述。状态代码由三位数字组成，第一个数字定义了响应的类别，且有五种可能取值
       * 常用的状态码及状态描述对应的含义：
-      | 状态码      | 文本描述     | 含义     |
-      | ---------- | :-----------:  | :-----------: |
-      | 200     | OK     | 客户端请求成功     |
-      | 400     | Bad Request     | 客户端请求有语法错误，不能被服务器所理解     |
-      | 401     | Unauthorized     | 请求未经授权，这个状态代码必须和WWW-Authenticate报头域一起使用     |
-      | 403     | Forbidden     | 服务器收到请求，但是拒绝提供服务     |
-      | 404     | Not Found     | 请求资源不存在     |
-      | 500     | Internal Server Error | 服务器发生不可预期的错误     |
-      | 503     | Server Unavailable     | 服务器当前不能处理客户端的请求，一段时间后可能恢复正常     |
+      
+状态码      | 文本描述     | 含义     
+---------- | :-----------:  | :-----------:     
+200     | OK     | 客户端请求成功     
+400     | Bad Request     | 客户端请求有语法错误，不能被服务器所理解     
+401     | Unauthorized     | 请求未经授权，这个状态代码必须和WWW-Authenticate报头域一起使用    
+403     | Forbidden     | 服务器收到请求，但是拒绝提供服务     
+404     | Not Found     | 请求资源不存在     
+500     | Internal Server Error | 服务器发生不可预期的错误     
+503     | Server Unavailable     | 服务器当前不能处理客户端的请求，一段时间后可能恢复正常     
     * 消息报头
     * 空行
     * 响应正文
