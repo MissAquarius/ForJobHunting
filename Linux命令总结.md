@@ -151,4 +151,97 @@
   * 文件或目录的属性
   ![image](https://github.com/MissAquarius/ForJobHunting/blob/master/image/linux%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7.png)
   * 对应： 索引节点inode 文件种类和权限 硬链接个数 属主 组主 大小 最后修改/访问时间 文件名或目录名
- 
+## 打包与压缩命令
+* tar 打包命令：将多个文件合并成一个文件
+  * 参数：
+    * -c 建立新的压缩文件
+    * -v 显示操作过程
+    * -f 指定压缩文件
+    * -r 添加文件到已压缩的文件
+    * -x 从压缩的文件中提取文件
+    * -t 显示压缩文件的内容
+    * -z 打包完调用gzip解压文件
+    * -j 打包完调用bzip2解压文件
+  * 例子：记住打包/查看/解压命令即可
+    * tar -cvf newfile.tar oldfile 将oldfile打包成newfile.tar
+    * tar -zcvf newfile.tar.gz oldfile  将oldfile打包并采用gzip压缩成newfile.tar.gz
+    * tar -jcvf newfile.tar.bz2 oldfile 将oldfile打包并采用bzip2压缩成newfile.tar.bz2
+    * tar -ztvf newfile.tar.gz 查阅上面第二个压缩文件的内容（加上z参数是因为用gzip方式压缩的）
+    * tar -zxvf newfile.tar.gz 解压上面第二个压缩文件
+* 压缩命令gzip，使用前需要先用tar命令打包
+    * tar -cvf file.tar
+    * gzip file.tar 压缩
+    * gzip -l file.tar.gz 查看压缩包中的内容
+    * gzip -dv file.tar.gz  解压
+## 文件权限
+* 文件或目录的权限分为：可读r（4）/可写w（2）/可执行x（1）/可删除-（0）
+* 权限范围：  u：文件或目录的当前用户 g：文件或目录的当前群组 o：除了u和g的其他用户或群组  a：所有用户与群组
+* -rw-r--r--  总共有十位：第一个‘-’表示该文件是普通文件，文件的属主用户拥有rw权限，与属主同组的其他用户拥有r权限，系统其他用户拥有r权限
+* chmod
+  * 功能：改变文件或目录权限
+  * 格式：  chmod [who] [+-=] [mode] 文件名
+  * 参数：
+    * -R 递归的处理目录及子目录下的文件
+    * -v 显示处理信息
+    * -f 错误信息不输出
+  * 例子：
+    * chmod a+x filename 增加filename所有用户组可执行权限
+    * chmod ug=w, o-x filename 将filename的属主和用户组的权限改为写（撤销原来的权限），同时删除其他用户的可执行权限
+    * chmod -R u+x diectoryname 递归的将diectoryname及其子目录下的属主用户增加可执行权限
+    * 数字表示法： chmod u=rwx,g=rx,o=x filename 等同于 chmod 751 filename 
+* chgrp
+  * 功能：改变文件或目录所属群组，root超级用户才有权限使用此命令
+  * 格式：chgrp [参数] [组] 文件 
+  * 参数：
+    * -v 显示处理信息
+    * -R 递归处理
+    * -f 忽略错误信息
+    * --reference=<文件或者目录> 
+  * 例子：
+    * chgrp -v newgroup filename 将filename的属主改为newgroup
+    * chgrp --reference==file filename 改变filename的群组属性，使得其与file的属性相同
+* chown
+  * 功能：将指定文件的拥有者改为指定的用户或组
+  * 例子：
+    * 改变用户：chown newuser: filename
+    * 改变组：chown :newgroup filename
+    * 改变用户和组：chown newuser:newgroup filename
+## 磁盘存储
+* df
+  * 功能：检查磁盘空间占用情况
+  * 参数：
+    * -a 全部文件系统列表
+    * -h 方便阅读方式显示
+    * -H 等于‘-h’，但是计算时1k=1000B 而不是1024B
+    * -i 显示inode信息
+* du
+  * 功能：显示每个文件或目录的磁盘使用情况
+  * 参数：
+    * -b 显示文件或目录大小时，以byte为单位
+    * -h 方便阅读方式展示
+## 其他
+* top：动态显示当前系统正在执行的进程的相关信息，包括进程ID、内存占用率、CPU占用率等
+* ps： 静态显示系统中正在执行的进程信息
+  * 例子：ps -a 显示所有进程信息；ps -ef|grep ssh 与grep连用，查找指定进程信息；ps aux 列出目前所有的正在内存中的程序
+* kill：杀死进程
+* 进程的五种状态：运行R/中断S/不可中断D/僵死Z/停止T
+* free：显示系统使用和空闲的内存情况
+* ifconfig：查看和配置网络设备
+* route：显示与操作IP路由表
+* traceroute：追踪网络数据包的路由途径
+* netstat：检验本机各端口的网络连接情况
+* telnet：远程登陆
+* date：显示或设定系统的日期与时间
+* diff：比较单个文件或目录，找出不一样的地方
+* wc： 统计文件中的字数/行数/字节数并输出，常与管道符连用，输出统计信息
+  * wc -c 统计字节数
+  * wc -l 统计行数
+  * wc -m 统计字符数
+  * wc -w 统计字数（一个字是指由空格/跳格/换行分割的字符串）
+* scp：远程拷贝文件，使用ssh加密传输，更安全
+* rcp：远程拷贝文件，是scp的弱化版，不安全
+## Linux三剑客
+* sed：用于文本内容的编辑，默认只处理模式空间，不处理原数据，sed是针对一行行数据来进行处理的，
+* grep：用正则表达式搜索文本 grep [option] pattern filename
+  * 例子：ps -ef|grep -c svn 查找指定进程的个数
+* awk：主要用于文本内容的分析处理，
