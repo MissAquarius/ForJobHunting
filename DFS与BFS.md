@@ -221,5 +221,129 @@ class Solution(object):
 
         return res
 ```
-解法一：BFS的思路，明天补充吧~
+解法一：BFS的思路，首先将s入队，然后出队，判断队头字符串是否是合法的，如果是合法的，就不继续往后追加（因为求得是最少去掉几个字符）；如果不合法，就从头开始，依次去掉队头元素的每个字符，入队，待下一次出队判断<br>
+注意：用了一个set集合，记录被判断过的字符串，防止重复判断.每次入队的时候，就在set中检查一下，没有出现过的才入队
 
+```python
+class Solution(object):
+    def isValid(self, s):
+        count =0
+        for ss in s:
+            if ss == '(':
+                count += 1
+            if ss == ')':
+                count -= 1
+            if count < 0:
+                return False
+        return count == 0
+    
+    
+    def dfs(self, s, start, cnleft, cnright, res):
+        if cnleft == 0 and cnright == 0:
+            if self.isValid(s):
+                res.append(s)
+        for i in range(start, len(s)):
+            if i != start and s[i] == s[i-1]:
+                continue
+            if s[i] == '(' and cnleft > 0:
+                self.dfs(s[:i]+s[i+1:], i, cnleft-1, cnright, res)
+            if s[i] == ')' and cnright > 0:
+                self.dfs(s[:i]+s[i+1:], i, cnleft, cnright-1, res)
+                
+                
+    def removeInvalidParentheses(self, s):
+        """
+        :type s: str
+        :rtype: List[str]
+        """
+        # 统计多余的左右括号数目cnleft,cnright
+        res = []
+        cnleft, cnright = 0, 0
+        for i in range(len(s)):
+            if s[i] == '(':
+                cnleft += 1
+            elif s[i] == ')' and cnleft > 0:
+                cnleft -= 1
+            elif s[i] == ')' and cnleft <= 0:
+                cnright += 1
+        self.dfs(s, 0, cnleft, cnright, res)
+        return res
+```
+解法二：DFS思路 首先统计多余的左括号和右括号的个数（如“(()))”中多余的左括号个数是0，多余的右括号个数是1），然后从头开始遍历s，如果当前遇到的是左括号，且不是第一次遇到，就去掉当前的左括号，从当前位置继续遍历；同理右括号也是。如果多余的左右括号个数都为0，检查字符串是否合法，合法就加入结果<br>
+需要注意的是：不是遇到左括号就去掉，比如‘(()’，去掉一个左括号个去掉第二个左括号效果是一样的，为了防止重复检查，遇到第一个左括号的时候，继续遍历，直到遇到最后一个左括号的时候，才去掉
+
+* [279 Perfect Squares](https://leetcode.com/problems/perfect-squares/)
+```python
+import collections
+class Solution(object):
+    def numSquares(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+
+        i = 1
+        sqnum = []
+        while i*i <= n: # 首先列出来备选的平方数列表
+            sqnum.append(i*i)
+            i += 1
+        
+        depth = 1
+        q = collections.deque()
+        visited = set() # set控制只有那些没有出现过的数字才可入队
+
+        for i in range(len(sqnum)): 
+            if sqnum[i] == n: # 特例[4]等
+                return 1
+            else:
+                q.append([sqnum[i], n - sqnum[i]])  # 首先把所有元素:剩下的值 入队
+                visited.add(n - sqnum[i])
+
+        while q:
+            size = len(q)
+            for i in range(size):
+                number, curn = q.popleft()
+                for j in range(len(sqnum)):
+                    if curn == sqnum[j]:  # 找到最后一个值
+                        return depth + 1
+                    if sqnum[j] < curn and (curn - sqnum[j]) not in visited:
+                        q.append([sqnum[j], curn - sqnum[j]]) # 重新入队
+            depth += 1
+```
+思路一：采用BFS的思想，树的每一层都拿所有符合条件的平方数去试<br>
+注意：必须要加一个set，控制防止一个数字重复出现，因为一个数字第一次出现的时候，深度是最浅的。如果没有这个控制，当n比较大的时候，会超时
+```python
+import math
+class Solution(object):
+    def numSquares(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+
+        # 简化数字
+        while n % 4 == 0:
+            n = n // 4
+       
+        if n % 8 == 7:
+            return 4
+        # n需要一个完全平方数来表示的情况下，那么这个完全平方数一定是本身，即只需要判断n是否是平方数
+        if math.pow(int(math.sqrt(n)),2) == n:
+            return 1
+        
+        # n需要两个完全平方数表示的情况下，那么第一个完全平方数就从1开始试，看剩下的数可以表示成某个数的平方的话，就返回2 
+        i = 1
+        while i * i < n:
+            j = math.sqrt(n-i*i)  # 第一个完全平方数是i，那么剩下的是n-i*i
+            if j == int(j):
+                return 2
+            i += 1
+            
+        return 3
+```
+思路二：套用数学公式，直接算<br>
+规则：<br>
+四平方定理：任何一个数都可以表示成不超过4个平方数的和，因此本题只会返回1,2,3,4,中的任意一个数<br>
+简化：如果一个数含有因子4，可以将其去除，不影响结果（如2和8返回的结果相同）<br>
+如果一个数除以8余7的话，则一定是由4个平方数的和组成<br>
+因此接下来尝试将其拆成两个平方数之和，如果拆成功了，返回2；拆成一个平方数，返回1；其他情况返回3
