@@ -347,3 +347,113 @@ class Solution(object):
 简化：如果一个数含有因子4，可以将其去除，不影响结果（如2和8返回的结果相同）<br>
 如果一个数除以8余7的话，则一定是由4个平方数的和组成<br>
 因此接下来尝试将其拆成两个平方数之和，如果拆成功了，返回2；拆成一个平方数，返回1；其他情况返回3
+
+* [207 Course Schedule](https://leetcode.com/problems/course-schedule/)
+```python
+import collections
+class Solution(object):
+    def canFinish(self, numCourses, prerequisites):
+        """
+        :type numCourses: int
+        :type prerequisites: List[List[int]]
+        :rtype: bool
+        """
+        graph = []
+        list1 = [0 for _ in range(numCourses)]
+        q = collections.deque()
+        # 用二维数组表示有向图([0,1]表示0的先修课是1，则在图中表示成[1,0]),并记录每个节点的入度
+        for ps in prerequisites:
+            graph.append([ps[1],ps[0]])
+            list1[ps[0]] += 1
+            
+        # 将节点入度数是0的元素入队
+        for i in range(len(list1)):
+            if list1[i] == 0:
+                q.append(i)
+        
+        # 遍历队列，访问其相邻元素，访问到了就将相邻元素的入度数减1，如果减去1过后是0，就加入队列中
+        while q:
+            cournum = q.popleft()
+            for nodes in graph:
+                if nodes[0] == cournum:
+                    list1[nodes[1]] -= 1
+                    if list1[nodes[1]] == 0:
+                        q.append(nodes[1])
+        # 全部遍历完，如果还有节点的入度是大于0，说明图中存在环，返回False
+        if max(list1) != 0 :
+            return False
+        return True
+```
+思路：首先将节点表示成图的形式，并记录每个节点的入度；将入度为0的节点加入到队列中；逐个元素出队，访问其相邻元素，并将其入度数-1，如果相邻元素的入度数变成0，则也加入队列。整个队列元素遍历结束后，如果还有节点的度数不为0，则说明图中有环路存在。
+
+* [102 Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/)
+```python
+import collections
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def levelOrder(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[List[int]]
+        """
+        if not root:
+            return []
+        res = []
+        
+        q = collections.deque()
+        q.append(root)
+        while q:
+            size = len(q)
+            temp = []
+            for i in range(size):
+                treenode = q.popleft()
+                temp.append(treenode.val)
+                if treenode.left:
+                    q.append(treenode.left)
+                if treenode.right:
+                    q.append(treenode.right)
+            res.append(temp)
+        return res
+```
+思路：比较简单，就是BFS层次遍历
+* [101 Symmetric Tree](https://leetcode.com/problems/symmetric-tree/)
+```python
+import collections
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):            
+    def isSymmetric(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+        q = collections.deque()
+        q.append([root, root])
+        
+        while q:
+            node1, node2 = q.popleft()
+            if not node1 and not node2:
+                continue
+            if not node1 or not node2:
+                return False
+            if node1.val != node2.val:
+                return False
+            
+            q.append([node1.left, node2.right])
+            q.append([node1.right, node2.left])
+        return True
+
+```
+思路：找到每一层位置对称元素node1和node2，比较两者
+* [200 Number of Islands](https://leetcode.com/problems/number-of-islands/)
