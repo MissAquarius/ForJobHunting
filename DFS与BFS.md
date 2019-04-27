@@ -2,7 +2,11 @@
 * 图示：
 ![image](https://github.com/MissAquarius/ForJobHunting/blob/master/image/DFS.png)
 
-
+* 例题：
+  * [301 remove-invalid-parentheses](https://leetcode.com/problems/remove-invalid-parentheses/)（见BFS部分其他解法）
+  * [207 Course Schedule](https://leetcode.com/problems/course-schedule/) （见BFS部分其他解法）
+  * [200 Number of Islands](https://leetcode.com/problems/number-of-islands/)（见BFS部分其他解法）
+  * [101 Symmetric Tree](https://leetcode.com/problems/symmetric-tree/)（见BFS部分其他解法）
 ## BFS
 * 常用于：求最短路径、至少需要几步的问题
 * 搜索过程（借助队列和一个一维数组实现）：
@@ -539,3 +543,35 @@ class Solution(object):
         return count
 ```
 思路：首先将所有值为1的坐标对加入到一个集合里面；然后逐个将集合里的元素弹出，入队，并且判断当前位置四个方向的坐标对是否在集合里，在的话就将其从集合中去除，并入队。直到对为空的时候，说明产生了一个区域。count+1，然后继续将集合元素入队，开始下一个区域的判断。
+
+```python
+class Solution(object):
+    def dfs(self, grid, i, j):
+        if i < 0 or j < 0 or i > len(grid)-1 or j > len(grid[0])-1 or grid[i][j] != '1':
+        # 判断越界：if i == -1 or j == -1 or i == len(grid) or j == len(grid[0]) or grid[i][j] != '1':
+            return 
+        grid[i][j] = '#' # 标记已经访问过
+        self.dfs(grid, i, j - 1)
+        self.dfs(grid, i, j + 1)
+        self.dfs(grid, i - 1, j)
+        self.dfs(grid, i + 1, j)
+        
+    def numIslands(self, grid):
+        """
+        :type grid: List[List[str]]
+        :rtype: int
+        """
+        if not grid:
+            return 0
+        
+        m = len(grid)
+        n = len(grid[0])
+        count = 0 
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] == '1':
+                    self.dfs(grid, i, j)
+                    count += 1
+        return count
+```
+思路二：采用DFS的思想，逐个遍历；对于每个grid[i][j]，首先标记其访问过了，然后递归判断其四个方向，递归终止条件为下标越界，或者取值不为1，表示此处有隔断，直接返回。每返回一次，表示找到一块区域，count计数加1
