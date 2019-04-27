@@ -384,7 +384,42 @@ class Solution(object):
             return False
         return True
 ```
-思路：首先将节点表示成图的形式，并记录每个节点的入度；将入度为0的节点加入到队列中；逐个元素出队，访问其相邻元素，并将其入度数-1，如果相邻元素的入度数变成0，则也加入队列。整个队列元素遍历结束后，如果还有节点的度数不为0，则说明图中有环路存在。
+思路1：BFS 首先将节点表示成图的形式，并记录每个节点的入度；将入度为0的节点加入到队列中；逐个元素出队，访问其相邻元素，并将其入度数-1，如果相邻元素的入度数变成0，则也加入队列。整个队列元素遍历结束后，如果还有节点的度数不为0，则说明图中有环路存在。
+
+```python
+import collections
+class Solution(object):
+    def dfs(self, i, visited, graph):
+        if visited[i] == -1:
+            return False
+        if visited[i] == 1:
+            return True
+        visited[i] = -1
+        for j in graph[i]:
+            if not self.dfs(j, visited, graph):
+                return False
+        visited[i] = 1
+        return True
+        
+    def canFinish(self, numCourses, prerequisites):
+        """
+        :type numCourses: int
+        :type prerequisites: List[List[int]]
+        :rtype: bool
+        """
+        graph = [[] for _ in range(numCourses)]
+        visited = [0 for _ in range(numCourses)]
+        for ps in prerequisites: # graph[i]记录i号课程的前置课程
+            graph[ps[0]].append(ps[1])
+
+        for i in range(numCourses):
+            if not self.dfs(i, visited, graph):
+                return False
+        return True
+```
+思路2：DFS思想：首先用graph记录每个课程对应的前置课程；visited记录每个课程的状态：0未遍历到；1已经遍历过；-1正在遍历中。<br>
+然后遍历每门课程i，如果i已经遍历过，返回true；如果i正在被遍历，说明存在环路，返回false，否则i没有被遍历到，就暂时将visited[i]的值修改为-1，表示当前正在遍历；然后对i的每门先行课进行同样的操作，若有返回false的，说明在i和i的先行课同时被遍历到了，返回false
+
 
 * [102 Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/)
 ```python
@@ -422,6 +457,7 @@ class Solution(object):
         return res
 ```
 思路：比较简单，就是BFS层次遍历
+
 * [101 Symmetric Tree](https://leetcode.com/problems/symmetric-tree/)
 ```python
 import collections
@@ -456,4 +492,50 @@ class Solution(object):
 
 ```
 思路：找到每一层位置对称元素node1和node2，比较两者
+
 * [200 Number of Islands](https://leetcode.com/problems/number-of-islands/)
+```python
+import collections
+class Solution(object):
+    def numIslands(self, grid):
+        """
+        :type grid: List[List[str]]
+        :rtype: int
+        """
+        if not grid:
+            return 0
+        
+        m = len(grid)
+        n = len(grid[0])
+        q = collections.deque()
+        # 首先把所有为1的节点加入lands
+        lands = set()
+        count = 0
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] ==  '1':
+                    lands.add((i, j))
+        while lands:
+            count += 1
+            q.append(lands.pop())
+            while q:
+                curi,curj = q.popleft()
+                # 上
+                if (curi-1, curj) in lands:
+                    q.append((curi-1, curj))
+                    lands.remove((curi-1, curj))
+                # 下
+                if (curi+1, curj) in lands:
+                    q.append((curi+1, curj))
+                    lands.remove((curi+1, curj))
+                # 左
+                if (curi, curj-1) in lands:
+                    q.append((curi, curj-1))
+                    lands.remove((curi, curj-1))
+                # 右
+                if (curi, curj+1) in lands:
+                    q.append((curi, curj+1))
+                    lands.remove((curi, curj+1))
+        return count
+```
+思路：首先将所有值为1的坐标对加入到一个集合里面；然后逐个将集合里的元素弹出，入队，并且判断当前位置四个方向的坐标对是否在集合里，在的话就将其从集合中去除，并入队。直到对为空的时候，说明产生了一个区域。count+1，然后继续将集合元素入队，开始下一个区域的判断。
