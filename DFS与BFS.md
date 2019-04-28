@@ -425,7 +425,6 @@ class Solution(object):
 然后遍历每门课程i，如果i已经遍历过，返回true；如果i正在被遍历，说明存在环路，返回false，否则i没有被遍历到，就暂时将visited[i]的值修改为-1，表示当前正在遍历；然后对i的每门先行课进行同样的操作，若有返回false的，说明在i和i的先行课同时被遍历到了，返回false
 
 
-* [102 Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/)
 ```python
 import collections
 # Definition for a binary tree node.
@@ -495,8 +494,11 @@ class Solution(object):
         return True
 
 ```
-思路：找到每一层位置对称元素node1和node2，比较两者
+思路：DFS思想，对于每一层，找到每一层位置对称元素node1和node2，比较两者
 
+```python
+
+```
 * [200 Number of Islands](https://leetcode.com/problems/number-of-islands/)
 ```python
 import collections
