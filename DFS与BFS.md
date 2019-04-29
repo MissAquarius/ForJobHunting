@@ -7,6 +7,36 @@
   * [207 Course Schedule](https://leetcode.com/problems/course-schedule/) （见BFS部分其他解法）
   * [200 Number of Islands](https://leetcode.com/problems/number-of-islands/)（见BFS部分其他解法）
   * [101 Symmetric Tree](https://leetcode.com/problems/symmetric-tree/)（见BFS部分其他解法）
+  * [494 Target Sum](https://leetcode.com/problems/target-sum/)
+```python
+class Solution(object):
+    def dfs(self, CurIndex, CurTotal, S, nums): 
+        if CurIndex == len(nums):
+            if CurTotal == S:
+                self.count += 1
+            return 
+        
+        self.dfs(CurIndex + 1, CurTotal + nums[CurIndex], S, nums)
+        self.dfs(CurIndex + 1, CurTotal - nums[CurIndex], S, nums)
+        
+    def findTargetSumWays(self, nums, S):
+        """
+        :type nums: List[int]
+        :type S: int
+        :rtype: int
+        """
+        if not nums:
+            return 0
+        
+        self.count = 0
+        self.dfs(0, 0, S, nums)
+        return self.count
+```
+思路一：DFS，相当于遍历所有可能的结果，超时……所以这种“只求有几种方法，而不求具体每种方法是什么”的问题，用DFS会超时，建议用DP
+```python
+
+```
+思路二：动态规划
 ## BFS
 * 常用于：求最短路径、至少需要几步的问题
 * 搜索过程（借助队列和一个一维数组实现）：
@@ -494,11 +524,39 @@ class Solution(object):
         return True
 
 ```
-思路：DFS思想，对于每一层，找到每一层位置对称元素node1和node2，比较两者
+思路：BFS思想，对于每一层，找到每一层位置对称元素node1和node2，比较两者，比较结束后，再把对称位置（下一次需要比较的元素对）入队。
+
 
 ```python
+import collections
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):  
+    def dfs(self, node1, node2):
+        if not node1 and not node2:
+            return True
+        if not node1 or not node2:
+            return False
+        if node1.val != node2.val:
+            return False
+        return self.dfs(node1.left, node2.right) and self.dfs(node1.right, node2.left)
+    
+    def isSymmetric(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+        if not root:
+            return True
+        return self.dfs(root.left, root.right)
 
 ```
+思想：DFS思想，用了递归的方法
 * [200 Number of Islands](https://leetcode.com/problems/number-of-islands/)
 ```python
 import collections
