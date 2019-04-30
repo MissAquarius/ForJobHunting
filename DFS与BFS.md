@@ -7,6 +7,7 @@
   * [207 Course Schedule](https://leetcode.com/problems/course-schedule/) （见BFS部分其他解法）
   * [200 Number of Islands](https://leetcode.com/problems/number-of-islands/)（见BFS部分其他解法）
   * [101 Symmetric Tree](https://leetcode.com/problems/symmetric-tree/)（见BFS部分其他解法）
+  
   * [494 Target Sum](https://leetcode.com/problems/target-sum/)
 ```python
 class Solution(object):
@@ -34,9 +35,75 @@ class Solution(object):
 ```
 思路一：DFS，相当于遍历所有可能的结果，超时……所以这种“只求有几种方法，而不求具体每种方法是什么”的问题，用DFS会超时，建议用DP
 ```python
-
+待补充
 ```
-思路二：动态规划
+思路二：dp
+
+* [394 Decode String](https://leetcode.com/problems/decode-string/)
+```python
+class Solution(object):
+    def decodeString(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        stack = []
+        for i in range(len(s)):
+            if s[i] != ']':
+                stack.append(s[i])
+            else:
+                temp = []
+                while stack and stack[-1] != '[':
+                    temp.append(stack.pop())
+                
+                temps = ''
+                for i in range(len(temp)-1,-1,-1):
+                    temps += temp[i]
+
+                stack.pop() # 弹出[
+                # 寻找次数
+                times = ''
+                while stack and stack[-1] in '0123456789' :
+                    times += stack.pop()
+                times = int(times[-1::-1])
+                stack.append(temps * times)
+                
+        res = ''
+        for s in stack:
+            res += s
+        return res
+```
+思路：借助于栈，遇到非']'就进栈，遇到']'，就开始退栈，直到遇到'[', 取出来的元素就是要重复的元素；重复的次数就继续退栈，直到遇到非数字；然后转成int型；最后将重复后的元素压栈，继续遍历
+
+```python
+class Solution(object):
+    def decodeString(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        stack = []
+        res = ''
+        for i in range(len(s)):
+            if s[i] == '[':
+                stack.append(i)
+            elif s[i] == ']':
+                startindex = stack.pop()
+                if not stack:
+                    temp = self.decodeString(s[startindex+1:i])  # 要重复的元素
+                    # 寻找重复次数
+                    numstart = startindex
+                    while numstart - 1 >= 0 and s[numstart-1].isdigit():
+                        numstart -= 1
+                    times = int(s[numstart:startindex])
+                    res += temp * times
+            elif not stack and s[i].isalpha():
+                res += s[i]
+        return res
+```
+思路：难点在于递归的想法，递归用于寻找最外层的[]对的位置，找到后就递归寻找[]框起来的元素，temp是其返回的结果；stack中入的是下标，而不是具体的元素值
+
+
 ## BFS
 * 常用于：求最短路径、至少需要几步的问题
 * 搜索过程（借助队列和一个一维数组实现）：
