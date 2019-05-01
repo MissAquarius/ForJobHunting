@@ -103,6 +103,85 @@ class Solution(object):
 ```
 思路：难点在于递归的想法，递归用于寻找最外层的[]对的位置，找到后就递归寻找[]框起来的元素，temp是其返回的结果；stack中入的是下标，而不是具体的元素值
 
+* [213. House Robber](https://leetcode.com/problems/house-robber/)
+```python
+
+```
+动态规划，待补充
+* [213. House Robber II](https://leetcode.com/problems/house-robber-ii/)
+```python
+
+```
+动态规划，待补充
+* [337 House Robber III](https://leetcode.com/problems/house-robber-iii/)
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def dfs(self, curnode):
+        curarr = [0, 0]
+        if curnode == None:
+            return curarr
+        # curarr[0]表示抢劫当前节点，curarr[1]表示不抢劫当前节点
+        leftarr = self.dfs(curnode.left)
+        rightarr =  self.dfs(curnode.right)
+        curarr[0] = curnode.val + leftarr[1] + rightarr[1]
+        curarr[1] = max(leftarr[0], leftarr[1]) + max(rightarr[0], rightarr[1])
+        return curarr
+    def rob(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        arr = self.dfs(root)
+        return max(arr)
+```
+思路：为每个node寻找其抢劫和不抢劫情况下的最大值, 递归过程如下<br>
+抢劫的情况：其获得值 = 其值 + 左孩子不抢劫的最大值 + 右孩子不抢劫的最大值<br>
+不抢劫的情况： 其获得值 = max(左子树抢劫, 左子树不抢劫) + max(右孩子抢劫, 右孩子不抢劫) <br>
+终止条件：如果遇到节点为None的情况，说明抢劫和不抢劫都返回0  <br>
+每次遇到递归就无从下手，其实递归不要考虑具体的实现细节，只写出在当前情况的操作流程即可，比如如何求左孩子、右孩子在两种情况下的最值不需要考虑，因为递归操作，只需要拿到其结果即可。把递归当成是一个处理流程。
+
+* [124 Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/)
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def dfs(self, node):
+        if not node:
+            return 0
+
+        leftmax = max(self.dfs(node.left), 0) # 左子树返回
+        rightmax = max(self.dfs(node.right), 0) # 右子树返回
+        local_max = leftmax + rightmax + node.val  # 局部最大值取：当前数的所有值
+        self.global_max = max(self.global_max, local_max )  # 更新全局最大值
+        return max(leftmax, rightmax) + node.val  # 递归函数返回的是左边-节点或者右边-节点的最大值
+        
+    def maxPathSum(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        
+        self.global_max = float('-inf')
+        self.dfs(root)
+        return self.global_max
+         
+```
+思路：全局最大值：不一定非要取到root节点，有可能中间的某个子树就取得最大值；局部最大值是当前递归到的局部树：用其左子树返回值、右子树返回值和当前根值相加<br>
+比较绕的是：在回溯过程中，只能从左子树回溯到根节点，或者右子树回溯到根节点，所以递归的返回值取左右子树的最大值与当前根节点之和<br>
+即：递归函数返回的是当前子树的最大值，其要么是从左孩子到根，要么是右孩子到根
+
 
 ## BFS
 * 常用于：求最短路径、至少需要几步的问题
