@@ -182,6 +182,136 @@ class Solution(object):
 比较绕的是：在回溯过程中，只能从左子树回溯到根节点，或者右子树回溯到根节点，所以递归的返回值取左右子树的最大值与当前根节点之和<br>
 即：递归函数返回的是当前子树的最大值，其要么是从左孩子到根，要么是右孩子到根
 
+* [104. Maximum Depth of Binary Tree](https://leetcode.com/problems/maximum-depth-of-binary-tree/)
+```python
+import collections
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def maxDepth(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        if not root:
+            return 0
+        
+        q = collections.deque()
+        depth = 0
+        q.append(root)
+        
+        while q:
+            for i in range(len(q)):
+                node = q.popleft()
+                if node.left:
+                    q.append(node.left)
+                if node.right:
+                    q.append(node.right)
+            depth += 1
+            
+        return depth
+```
+求二叉树的高度：BFS思想；将每一层入队遍历，每遍历一轮，层数就加1，且将左右孩子入队
+
+```python
+import collections
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def dfs(self, node):
+        if not node:
+            return 0
+        left_height = self.dfs(node.left)
+        right_height = self.dfs(node.right)
+        return max(left_height, right_height) + 1
+    
+    def maxDepth(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        return self.dfs(root)
+```
+思路二：DFS思想，对于每个节点，求其左右子树高度的最大值，然后加1便是以当前节点为根的树的高度
+
+* [114 Flatten Binary Tree to Linked List](https://leetcode.com/problems/flatten-binary-tree-to-linked-list/)
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def dfs(self, node):
+        if node:
+            self.reslist.append(node)
+            self.dfs(node.left)
+            self.dfs(node.right)
+            
+    def flatten(self, root):
+        """
+        :type root: TreeNode
+        :rtype: None Do not return anything, modify root in-place instead.
+        """
+        # 二叉树的前序遍历？？
+        # 递归版
+        self.reslist = []
+        if not root:
+            return []
+        self.dfs(root)
+        for i in range(len(self.reslist)-1):
+            self.reslist[i].left = None
+            self.reslist[i].right = self.reslist[i+1]
+        root = self.reslist[0]
+```
+思想：这道题基于二叉树的前序遍历，只不过将遍历后的节点都存储到节点的右孩子。用DFS思想递归遍历，不好的地方在于用了额外的存储空间暂存遍历顺序，最后重排
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def flatten(self, root):
+        """
+        :type root: TreeNode
+        :rtype: None Do not return anything, modify root in-place instead.
+        """
+        # 前序遍历 非递归
+        if not root:
+            return []
+        stack = []
+        reslist = []
+        p = root
+        while stack or p:
+            if p:
+                reslist.append(p)
+                stack.append(p)
+                p = p.left
+            elif stack:
+                p = stack.pop()
+                p = p.right
+
+        for i in range(len(reslist)-1):
+            reslist[i].left = None
+            reslist[i].right = reslist[i+1]
+        root = reslist[0]
+ ```
+ 思想：二叉树前序遍历的非递归算法
 
 ## BFS
 * 常用于：求最短路径、至少需要几步的问题
