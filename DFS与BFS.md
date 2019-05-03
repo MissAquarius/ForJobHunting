@@ -313,6 +313,129 @@ class Solution(object):
  ```
  思想：二叉树前序遍历的非递归算法
 
+* [105. Construct Binary Tree from Preorder and Inorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def helper(self, preorder, inorder):
+        if inorder:
+            value = preorder.pop(0)  # 当前根节点值
+            root = TreeNode(value)
+            temp_index = inorder.index(value) # 找到其值在中序遍历中的位置，将遍历结果分为两半
+            root.left = self.helper(preorder, inorder[:temp_index])
+            root.right = self.helper(preorder, inorder[temp_index+1:])
+            return root
+    def buildTree(self, preorder, inorder):
+        """
+        :type preorder: List[int]
+        :type inorder: List[int]
+        :rtype: TreeNode
+        """
+        # 给定前序和中序遍历的结果，构造出整棵树
+        return self.helper(preorder, inorder) 
+```
+思路：前序遍历确定根节点的值，拿到根节点值后可将中序遍历的结果分为两半，位于值左边的说明是左子树上的元素，位于右边的是右子树的元素；对于左右两边，再根据前序遍历与中序遍历的结果找到树，递归求解
+
+* [98. Validate Binary Search Tree](https://leetcode.com/problems/validate-binary-search-tree/)
+```python
+import collections
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def PreOrderRecursive(self, node):
+        if node:
+            self.PreOrderRecursive(node.left)
+            self.res.append(node.val)
+            self.PreOrderRecursive(node.right)
+            
+    def isValidBST(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+        # 二叉搜索树，根据其性质对其进行中序遍历，会得到一个升序的序列
+        # 递归算法
+        self.res = []
+        self.PreOrderRecursive(root)
+        
+        for i in range(len(self.res)-1):
+            if self.res[i] >= self.res[i+1]:
+                return False
+        return True
+```
+```python
+class Solution(object):
+    def isValidBST(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+        # 中序遍历，非递归
+        if not root:
+            return True
+        stack = []
+        res = []
+        p = root
+    
+        while stack or p:
+            if p:   # 指针非空，进站，向左走
+                stack.append(p)
+                p = p.left
+            else:   # 指针为空，退栈，访问，向右走
+                p = stack.pop()
+                res.append(p.val)
+                p = p.right
+        
+        for i in range(len(res)-1):
+            if res[i] >= res[i+1]:
+                return False
+        return True
+```
+思路：判断一颗树是否是二叉搜索树<br>
+二叉搜索树的定义：对于每一个节点，其左孩子（若有）的值小于节点值，右孩子（若有）的值大于节点值；同时每一个子节点都是一颗BST<br>
+注意：二叉搜索树中，对于一个节点来说，不仅是左孩子节点的值要小于节点值，而且孙子节点等值都要小于其值（这一点之前竟然忘了，导致第一次没有ac），也就是说位于节点左边的值都要小于其值；右孩子同理。<br>
+性质：对一颗BST树进行中序遍历，会得到一个递增的有序序列；位于树最左端的值是最小的，位于树最右边的值是最大的。<br>
+因此本题一种思路是中序遍历树，看是否可以得到一个递增序列
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def isValid(self, node, curmin, curmax):
+        if not node:
+            return True
+        if node.val <= curmin or node.val >= curmax:
+            return False
+        return self.isValid(node.left,curmin, node.val) and self.isValid(node.right, node.val, curmax)
+    
+    def isValidBST(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+        return self.isValid(root, float("-inf"), float("inf"))
+ ```
+ 思路：对于每一个节点，都有一个范围[min, max]，如节点node，其左孩子的最大值不能超过node值，右节点的最小值不能小于node值，递归判断。初始时，取整数中的最值，子啊python里用float(-inf)代替C++中的MIN_INT，float(inf)代替MAX_INT
+ 
+[112. Path Sum](https://leetcode.com/problems/path-sum/)
+```python
+
+```
 ## BFS
 * 常用于：求最短路径、至少需要几步的问题
 * 搜索过程（借助队列和一个一维数组实现）：
