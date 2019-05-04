@@ -568,22 +568,22 @@ class Solution(object):
             return dp[i][j]
         
         maxlen = 1 # 初始时，matrix[i][j]算在内，所以初值为1，该值记录matrix[i][j]为起始节点的最长递增序列长度
-        
+        left_lenth, right_lenth, up_lenth, down_lenth = 0, 0, 0, 0
         # 递归求其四个方向上的最长递增序列长度，并且及时更新最大值
         if j-1 >= 0 and matrix[i][j-1] > matrix[i][j]:
             left_lenth = 1 + self.dfs(matrix, dp, i, j-1, m, n)
-            maxlen = max(maxlen, left_lenth)
+            # maxlen = max(maxlen, left_lenth)
         if j+1 < n and matrix[i][j+1] > matrix[i][j]:
             right_lenth = 1 + self.dfs(matrix, dp, i, j+1, m, n)
-            maxlen = max(maxlen, right_lenth)
+            # maxlen = max(maxlen, right_lenth)
         if i-1 >= 0 and matrix[i-1][j] > matrix[i][j]:
             up_lenth = 1 + self.dfs(matrix, dp, i-1, j, m, n)
-            maxlen = max(maxlen, up_lenth)
+            # maxlen = max(maxlen, up_lenth)
         if i+1 < m and matrix[i+1][j] > matrix[i][j]:
             down_lenth = 1 + self.dfs(matrix, dp, i+1, j, m, n)
-            maxlen = max(maxlen, down_lenth)
+            # maxlen = max(maxlen, down_lenth)
           
-        # maxlen = max(maxlen, left_lenth, right_lenth, up_lenth, down_lenth )       
+        maxlen = max(maxlen, left_lenth, right_lenth, up_lenth, down_lenth )       
         # 更新维护的dp数组
         dp[i][j] = maxlen
         return maxlen
