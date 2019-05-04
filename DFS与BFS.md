@@ -434,8 +434,186 @@ class Solution(object):
  
 [112. Path Sum](https://leetcode.com/problems/path-sum/)
 ```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
 
+class Solution(object):
+    def dfs(self, node, sum):
+        if not node:
+            return False
+        if node.val == sum and not node.left and not node.right: # 说明到叶子节点了
+            return True  
+        sum -= node.val 
+        return self.dfs(node.left, sum) or self.dfs(node.right, sum)
+    
+    def hasPathSum(self, root, sum):
+        """
+        :type root: TreeNode
+        :type sum: int
+        :rtype: bool
+        """
+        return self.dfs(root, sum)
 ```
+思路：对于每一个节点，递归遍历其左右节点，只要有一个返回True即可；每次递归时，sum值就要减去当前节点值，作为新的目标sum，直到遇到叶子节点的时候，看当前sum是否与叶子节点值相同
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):    
+    def hasPathSum(self, root, sum):
+        """
+        :type root: TreeNode
+        :type sum: int
+        :rtype: bool
+        """
+        if not root:
+            return False
+        stack = []
+        stack.append((root, root.val))
+
+        while stack:
+            curnode,val = stack.pop()
+            if not curnode.left and not curnode.right:
+                if val == sum:
+                    return True
+            # 此处先加右节点因为栈是先进后出，这样不断出栈，可一直遍历左节点
+            if curnode.right:
+                stack.append((curnode.right, curnode.right.val+val))
+            if curnode.left:
+                stack.append((curnode.left, curnode.left.val+val))
+            
+        return False
+```
+思路：DFS的非递归遍历，栈中记录每个节点及当前新的sum值（=原sum值加上当前节点的val），入栈顺序是先右再左，是为了出栈的时候可以先左再右，达到DFS的要求。
+
+* [113. Path Sum II](https://leetcode.com/problems/path-sum-ii/)
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def pathSum(self, root, sum):
+        """
+        :type root: TreeNode
+        :type sum: int
+        :rtype: List[List[int]]
+        """
+        if not root:
+            return []
+        
+        res = []
+        stack = []
+        stack.append((root, root.val, [root.val]))
+        
+        while stack:
+            node, val, ls = stack.pop()
+            if not node.left and not node.right:
+                if val == sum:
+                    res.append(ls)
+            if node.right:
+                stack.append((node.right, node.right.val + val, ls + [node.right.val]))
+            if node.left:
+                stack.append((node.left, node.left.val + val ,ls + [node.left.val]))
+        return res
+ ```
+ 思路：同上一样，只不过栈中额外保存当前加入新sum值的node值，注意此处不可直接改变ls，因为在right改变了，那在left会再次改变。要保证二者是独立的，就用+的写法。
+
+* [108. Convert Sorted Array to Binary Search Tree](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/)
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def helper(self, nums): 
+        if not nums:
+            return None
+        mid = len(nums) // 2
+        root = TreeNode(nums[mid])
+        root.left = self.helper(nums[:mid])
+        root.right = self.helper(nums[mid+1:])
+        return root
+    def sortedArrayToBST(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: TreeNode
+        """
+        if not nums:
+            return None
+        return self.helper(nums)
+  ```
+  思路：去当前nums的中点作为根节点的值；左边的节点位于左子树上，右边的位于右子树上，递归左右子树即可
+  
+* [329. Longest Increasing Path in a Matrix](https://leetcode.com/problems/longest-increasing-path-in-a-matrix/)
+```python
+class Solution(object):
+    def dfs(self, matrix, dp, i, j, m, n):
+        if dp[i][j]:
+            return dp[i][j]
+        
+        maxlen = 1 # 初始时，matrix[i][j]算在内，所以初值为1，该值记录matrix[i][j]为起始节点的最长递增序列长度
+        
+        # 递归求其四个方向上的最长递增序列长度，并且及时更新最大值
+        if j-1 >= 0 and matrix[i][j-1] > matrix[i][j]:
+            left_lenth = 1 + self.dfs(matrix, dp, i, j-1, m, n)
+            maxlen = max(maxlen, left_lenth)
+        if j+1 < n and matrix[i][j+1] > matrix[i][j]:
+            right_lenth = 1 + self.dfs(matrix, dp, i, j+1, m, n)
+            maxlen = max(maxlen, right_lenth)
+        if i-1 >= 0 and matrix[i-1][j] > matrix[i][j]:
+            up_lenth = 1 + self.dfs(matrix, dp, i-1, j, m, n)
+            maxlen = max(maxlen, up_lenth)
+        if i+1 < m and matrix[i+1][j] > matrix[i][j]:
+            down_lenth = 1 + self.dfs(matrix, dp, i+1, j, m, n)
+            maxlen = max(maxlen, down_lenth)
+          
+        # maxlen = max(maxlen, left_lenth, right_lenth, up_lenth, down_lenth )       
+        # 更新维护的dp数组
+        dp[i][j] = maxlen
+        return maxlen
+        
+    def longestIncreasingPath(self, matrix):
+        """
+        :type matrix: List[List[int]]
+        :rtype: int
+        """
+        if not matrix :
+            return 0
+        m = len(matrix)
+        n = len(matrix[0])
+        dp = [[0 for i in range(n)] for j in range(m)] # 存储以matrix[i][j]为起点的最大递增长度
+        maxlen = 0
+        
+        # 对于每个节点，都要计算以该节点起始的最长递增序列长度
+        for i in range(m):
+            for j in range(n):
+                maxlen = max(maxlen, self.dfs(matrix, dp, i, j, m, n))
+        return maxlen
+ ```
+ 思路：dp+dfs
+ 疑惑点：对于每个方向的递归，为什么求得该方向上的最长递增序列的值的时候，要立即与maxlen比较；而不能等四个方向都递归完了，集中比较（如注释的那句代码，即在四个方向返回的值和maxlen中取最值），报错信息为：left_lenth在使用之前未定义？感觉是对递归中局部变量的存储不理解？？之前是觉得互不干涉的，只需关注当前操作即可，不必关心在递归过程中对这个值的操作
+ 
+```python
+```
+纯dp方法，待补充
+
+ 
 ## BFS
 * 常用于：求最短路径、至少需要几步的问题
 * 搜索过程（借助队列和一个一维数组实现）：
