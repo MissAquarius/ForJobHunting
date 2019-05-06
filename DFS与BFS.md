@@ -702,6 +702,8 @@ class Solution(object):
 思想二：BFS，首先将所有边界上取值为‘O’的位置入队；然后开始逐个出队，并且暂且将该位置的元素改为其他标记，之后判断这些位置的上下左右四个方位是否也是'O',是的话就继续入队，直到队列为空。<br>
 最终将剩下的'O'换成‘X’，将特殊标记换回来为'O'
 
+* [116. Populating Next Right Pointers in Each Node](https://leetcode.com/problems/populating-next-right-pointers-in-each-node/)
+* [210. Course Schedule II](https://leetcode.com/problems/course-schedule-ii/)
 
 
 ## BFS
