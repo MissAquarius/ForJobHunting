@@ -600,6 +600,8 @@ class Solution(object):
         dp = [[0 for i in range(n)] for j in range(m)] # 存储以matrix[i][j]为起点的最大递增长度
         maxlen = 0
         
+        
+        
         # 对于每个节点，都要计算以该节点起始的最长递增序列长度
         for i in range(m):
             for j in range(n):
@@ -613,7 +615,95 @@ class Solution(object):
 ```
 纯dp方法，待补充
 
- 
+* [130. Surrounded Regions](https://leetcode.com/problems/surrounded-regions/)
+```python
+import collections
+class Solution(object):  
+    def dfs(self, board, i, j, m ,n):
+        board[i][j] = '*'
+        if  i -1 >= 0 and board[i-1][j] == 'O':
+            self.dfs(board, i-1, j, m, n)
+        if  i + 1 < m and board[i+1][j] == 'O':
+            self.dfs(board, i+1, j, m, n)        
+        if  j -1 >= 0 and board[i][j-1] == 'O':
+            self.dfs(board, i, j-1, m, n)     
+        if  j +1 < n and board[i][j+1] == 'O':
+            self.dfs(board, i, j+1, m, n)       
+    
+    def solve(self, board):
+        """
+        :type board: List[List[str]]
+        :rtype: None Do not return anything, modify board in-place instead.
+        """
+        # BFS
+        if not board:
+            return []
+        
+        m = len(board)
+        n = len(board[0])
+        q = collections.deque()
+        for i in range(m):
+            for j in range(n):
+                if  board[i][j] == 'O' and (i == 0 or i == m-1 or j == 0 or j == n-1):
+                    self.dfs(board, i, j, m, n)
+  
+        for i in range(m):
+            for j in range(n):
+                if board[i][j] == 'O':
+                    board[i][j] = 'X'
+                if board[i][j] == '*':
+                    board[i][j] = 'O'
+```
+思想一：DFS，对于每个边界上的值，如果值为'O',就调用DFS算法，首先将该位置元素值改为某个特殊标记，然后递归判断其上下左右四个方位有没有元素还是'O'<br>
+最终将剩下的'O'换成‘X’，将特殊标记换回来为'O'
+
+```python
+import collections
+class Solution(object):  
+    def bfs(self, board, q, m ,n): 
+        while q:
+            i, j = q.popleft()
+            board[i][j] = '*'
+            if  i -1 >= 0 and board[i-1][j] == 'O':
+                    q.append((i-1, j))
+            if  i + 1 < m and board[i+1][j] == 'O':
+                    q.append((i+1, j))
+            if  j -1 >= 0 and board[i][j-1] == 'O':
+                    q.append((i, j-1))
+            if  j +1 < n and board[i][j+1] == 'O':
+                    q.append((i, j+1))
+    
+    def solve(self, board):
+        """
+        :type board: List[List[str]]
+        :rtype: None Do not return anything, modify board in-place instead.
+        """
+        # BFS
+        if not board:
+            return []
+        
+        m = len(board)
+        n = len(board[0])
+        q = collections.deque()
+        for i in range(m):
+            for j in range(n):
+                if  board[i][j] == 'O' and (i == 0 or i == m-1 or j == 0 or j == n-1):
+                    #说明在边界上有O
+                    q.append((i, j))
+        self.bfs(board, q, m, n)
+    
+        for i in range(m):
+            for j in range(n):
+                if board[i][j] == 'O':
+                    board[i][j] = 'X'
+                if board[i][j] == '*':
+                    board[i][j] = 'O'
+```    
+思想二：BFS，首先将所有边界上取值为‘O’的位置入队；然后开始逐个出队，并且暂且将该位置的元素改为其他标记，之后判断这些位置的上下左右四个方位是否也是'O',是的话就继续入队，直到队列为空。<br>
+最终将剩下的'O'换成‘X’，将特殊标记换回来为'O'
+
+
+
 ## BFS
 * 常用于：求最短路径、至少需要几步的问题
 * 搜索过程（借助队列和一个一维数组实现）：
