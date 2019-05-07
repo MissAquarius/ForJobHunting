@@ -703,8 +703,115 @@ class Solution(object):
 最终将剩下的'O'换成‘X’，将特殊标记换回来为'O'
 
 * [116. Populating Next Right Pointers in Each Node](https://leetcode.com/problems/populating-next-right-pointers-in-each-node/)
-* [210. Course Schedule II](https://leetcode.com/problems/course-schedule-ii/)
+```python
+import collections
+"""
+# Definition for a Node.
+class Node(object):
+    def __init__(self, val, left, right, next):
+        self.val = val
+        self.left = left
+        self.right = right
+        self.next = next
+"""
+class Solution(object):
+    def connect(self, root):
+        """
+        :type root: Node
+        :rtype: Node
+        """
+        q = collections.deque()
+        if not root:
+            return None
+        q.append(root)
+        while q:
+            length = len(q)
+            for i in range(length):
+                node = q.popleft()
+                if i == length-1:
+                    node.next = None
+                else:
+                    node.next = q[0]
+                if node.left:
+                    q.append(node.left)
+                if node.right:
+                    q.append(node.right)
+        return root
+```
+思路：BFS，感觉没啥意义的一道题，就是把一颗二叉树中同一层次的节点之间用next指针相连
 
+```python
+"""
+# Definition for a Node.
+class Node(object):
+    def __init__(self, val, left, right, next):
+        self.val = val
+        self.left = left
+        self.right = right
+        self.next = next
+"""
+class Solution(object):
+    def connect(self, root):
+        """
+        :type root: Node
+        :rtype: Node
+        """
+        if not root:
+            return None
+        
+        stack = []
+        stack.append(root)
+        while stack:
+            node = stack.pop()
+            if node.left and node.right:
+                node.left.next = node.right
+                if node.next:
+                    node.right.next = node.next.left
+                stack.append(node.right)
+                stack.append(node.left)
+        return root
+ ```
+ 思路：DFS思想
+ 
+* [210. Schedule II](https://leetcode.com/problems/course-schedule-ii/)
+```python
+import collections
+class Solution(object):
+    def findOrder(self, numCourses, prerequisites):
+        """
+        :type numCourses: int
+        :type prerequisites: List[List[int]]
+        :rtype: List[int]
+        """
+        graph = []
+        list1 = [0 for _ in range(numCourses)] # 记录对应n号课程的入度
+        q = collections.deque()
+        res = []
+        
+        for ps in prerequisites:
+            graph.append((ps[1], ps[0]))
+            list1[ps[0]] += 1
+        
+        
+        for i in range(len(list1)):
+            if list1[i] == 0:
+                q.append(i)
+        
+        while q:
+            cournum = q.popleft()
+            res.append(cournum)
+            for node in graph:
+                if node[0] == cournum:  
+                    list1[node[1]] -= 1
+                    if list1[node[1]] == 0:
+                        q.append(node[1])
+                        
+        if max(list1) != 0:
+            return []
+       
+        return res
+```
+思路：与I的差别是 在出队的时候，保存当前出队的元素编号，这就是最终访问的顺序
 
 ## BFS
 * 常用于：求最短路径、至少需要几步的问题
@@ -1123,7 +1230,7 @@ class Solution(object):
 思路2：DFS思想：首先用graph记录每个课程对应的前置课程；visited记录每个课程的状态：0未遍历到；1已经遍历过；-1正在遍历中。<br>
 然后遍历每门课程i，如果i已经遍历过，返回true；如果i正在被遍历，说明存在环路，返回false，否则i没有被遍历到，就暂时将visited[i]的值修改为-1，表示当前正在遍历；然后对i的每门先行课进行同样的操作，若有返回false的，说明在i和i的先行课同时被遍历到了，返回false
 
-
+* [102. Binary Tree Level Order Traversal] (https://leetcode.com/problems/binary-tree-level-order-traversal/)
 ```python
 import collections
 # Definition for a binary tree node.
@@ -1226,6 +1333,7 @@ class Solution(object):
 
 ```
 思想：DFS思想，用了递归的方法
+
 * [200 Number of Islands](https://leetcode.com/problems/number-of-islands/)
 ```python
 import collections
