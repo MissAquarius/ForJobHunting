@@ -143,6 +143,36 @@ class Solution:
                 pHead2 = pHead2.next
         return None
 ```
+我的思路：遍历第一个链表，将节点加入set中；遍历第二个链表，同时判断节点是否在set中，不在就继续遍历，在的话就是第一个公共节点
+
+```python
+# -*- coding:utf-8 -*-
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+class Solution:
+    def FindFirstCommonNode(self, pHead1, pHead2):
+        # write code here
+        p1 = pHead1
+        p2 = pHead2
+        while p1 != p2:
+            if p1:
+                p1 = p1.next
+            else:
+                p1 = pHead2
+            if p2:
+                p2 = p2.next
+            else:
+                p2 = pHead1
+        return p1
+```
+其他解法：由于第一个公共节点之后的节点都相同，可以把两个链表拼起来：第一个链表+第二个链表，第二个链表+第一个链表，这样两个链表长度相同。用两个指针从头开始遍历，就可以找到公共节点。时间复杂度O(m+n),空间复杂度O(1)
+
+```python
+
+```
+先让长的链表把头部多出来的部分"砍掉"，然后两个指针再一起遍历，跟上面的思路大概一样。
 ## 二叉树
 
 ## 二叉搜索树
