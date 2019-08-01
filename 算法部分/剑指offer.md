@@ -1,4 +1,5 @@
-## 链表
+## 链表（八道）
+
 * 剑指Offer（三）：从尾到头打印链表
 ```python
 # -*- coding:utf-8 -*-
@@ -89,6 +90,7 @@ class Solution:
             cur = temp
         return dummy.next
 ```
+
 * 剑指Offer（十六）：合并两个排序的链表
 ```python
 # -*- coding:utf-8 -*-
@@ -170,21 +172,92 @@ class Solution:
 其他解法：由于第一个公共节点之后的节点都相同，可以把两个链表拼起来：第一个链表+第二个链表，第二个链表+第一个链表，这样两个链表长度相同。用两个指针从头开始遍历，就可以找到公共节点。时间复杂度O(m+n),空间复杂度O(1)
 
 ```python
-
+# -*- coding:utf-8 -*-
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+class Solution:
+    def GetLinkedListLength(self, head):
+        length = 0
+        while head:
+            head = head.next
+            length += 1
+        return length
+    def FindFirstCommonNode(self, pHead1, pHead2):
+        # write code here
+        len1 = self.GetLinkedListLength(pHead1)
+        len2 = self.GetLinkedListLength(pHead2)
+        diff = abs(len1 - len2)
+        if len1 > len2:
+            p = pHead1
+            q = pHead2
+        else:
+            p = pHead2
+            q = pHead1
+        for _ in range(diff):
+            p = p.next
+        while p != q and p and q:
+            p = p.next
+            q = q.next
+        return p
 ```
 先让长的链表把头部多出来的部分"砍掉"，然后两个指针再一起遍历，跟上面的思路大概一样。
-## 二叉树
 
-## 二叉搜索树
+* 剑指Offer（五十五）：链表中环的入口结点
+```python
+# -*- coding:utf-8 -*-
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+class Solution:
+    def EntryNodeOfLoop(self, pHead):
+        # write code here
+        slow = fast = pHead
+        flag = False
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+            if slow == fast:
+                flag = True
+                break
+        if flag:
+            fast = pHead
+            while fast != slow:
+                fast = fast.next
+                slow = slow.next
+            return fast
+        else:
+            return None
+```
+同leetcode原题，此处有公式，可以画图手推一下
 
-## 数组
+* 剑指Offer（五十六）：删除链表中重复的结点
+```python
+# -*- coding:utf-8 -*-
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+class Solution:
+    def deleteDuplication(self, pHead):
+        # write code here
+        dummy = ListNode(-1)
+        dummy.next = pHead
+        pre = dummy
+        cur = pHead
+        
+        while cur:
+            if cur.next and cur.val == cur.next.val:
+                while cur.next and cur.next.val == cur.val:
+                    cur = cur.next
+                pre.next = cur.next
+                cur = pre.next
+            else:
+                pre = cur
+                cur = cur.next
+        return dummy.next
+```
+注意看题：排序数组，所以下一个节点值一定是大于等于当前节点值，只需要判断相等的时候，一直往后遍历，直到不相等的出现，修改指针指向即可。
 
-## 字符串
-
-## 栈
-
-## 递归
-
-## 回溯法
-
-## 其他
