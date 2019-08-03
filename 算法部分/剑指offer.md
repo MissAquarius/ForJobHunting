@@ -264,9 +264,26 @@ class Solution:
 ## 二叉树
 * 剑指Offer（四）：重建二叉树
 ```python
-
+# -*- coding:utf-8 -*-
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+class Solution:
+    # 返回构造的TreeNode根节点    
+    def reConstructBinaryTree(self, pre, tin):
+        # write code here
+        if len(tin) == 0:
+            return None
+        root = TreeNode(pre[0])
+        index = tin.index(root.val)
+        root.left = self.reConstructBinaryTree(pre[1:index+1], tin[:index])
+        root.right = self.reConstructBinaryTree(pre[index+1:], tin[index+1:])
+        return root
+        
 ```
-根据前序遍历和中序遍历的结果，重建二叉树
+根据前序遍历和中序遍历的结果，重建二叉树，
 
 * 
 ## 二叉搜索树
