@@ -299,3 +299,18 @@ class Solution:
 ## 回溯法
 
 ## 其他
+* 剑指Offer（二十九）：最小的K个数
+```python
+class Solution:
+    def GetLeastNumbers_Solution(self, tinput, k):
+        # write code here
+        if not tinput or k <= 0 or k > len(tinput):
+            return []
+        tinput.sort()
+        return tinput[:k]
+```
+思路一：整个数组排序，输出前K个数
+```python
+
+```
+思路二：
