@@ -299,7 +299,7 @@ class Solution:
 ## 回溯法
 
 ## 其他
-* 剑指Offer（二十九）：最小的K个数
+* 剑指Offer（二十九）：最小的K个数，要求输出的k个数是有序的
 ```python
 class Solution:
     def GetLeastNumbers_Solution(self, tinput, k):
@@ -311,6 +311,45 @@ class Solution:
 ```
 思路一：整个数组排序，输出前K个数
 ```python
-
+# -*- coding:utf-8 -*-
+class Solution:
+    # 构建一个最大堆
+    def ModifyMaxHeap(self, heap, root):
+        left = 2 * root + 1
+        right = 2 * root + 2
+        largest = root
+        if left < len(heap) and heap[left] > heap[largest]:
+            largest = left
+        if right < len(heap) and heap[right] > heap[largest]:
+            largest = right
+        if largest != root:
+            heap[largest], heap[root] = heap[root], heap[largest]
+            self.ModifyMaxHeap(heap, largest)
+            
+    def BuildMaxHeap(self, heap):
+        size = len(heap)
+        for i in range(size-1, -1, -1):
+            self.ModifyMaxHeap(heap, i)
+            
+    def TopK(self, tinput, k):
+        size = len(tinput)
+        heap = tinput[:k]
+        self.BuildMaxHeap(heap)  # 构建一个容量为k的最大堆
+        for i in range(k, size):
+            if tinput[i] < heap[0]: # heap[0]始终是堆中最大值
+                tinput[i], heap[0] = heap[0], tinput[i]
+                self.ModifyMaxHeap(heap, 0)
+        return sorted(heap) 
+    
+    def GetLeastNumbers_Solution(self, tinput, k):
+        # write code here
+        if not tinput or k <= 0 or k > len(tinput):
+            return []
+        return self.TopK(tinput, k)
 ```
-思路二：
+思路二：创建一个大小为 k 的容器来存储最小的 k 个数，遍历数组 <br>
+若容器中的数字少于 k 个，则直接把读入的数字加入容器中<br>
+若容器中的数字等于 k 个，则不能再插入数字，只能替换已有的数字，先找到容器中最大的数，然后与新数字进行比较，若待插入的数字比当前最大值小，则替换当前最大值；若待插入的数字比当前最大值还大，那么它不可能成为最小的 k 个数，舍弃。<br>
+我们可以用二叉树来实现这个容器，在 O(logk) 的时间里能完成一次操作，总共有 n 个数字，则时间复杂度为 O(nlogk)  <br>
+
+由于每次都要去找容器中的最大值，我们可以用最大堆来实现，最大堆中根节点的值是最大的，那么找到每次找到容器中最大值的时间复杂度为 O(1)，同时需要 O(logk) 的时间来完成删除和插入新节点。<br>
