@@ -285,7 +285,138 @@ class Solution:
 ```
 根据前序遍历和中序遍历的结果，重建二叉树，
 
-* 
+* 剑指Offer（十七）：树的子结构
+```python
+class Solution:
+    def helper(self, node1, node2):
+        if not node2: # 说明node2比较完了
+            return True
+        if not node1: # 说明node1比较完了,node2还没完
+            return False
+        if node1.val != node2.val:
+            return False
+        return self.helper(node1.left, node2.left) and self.helper(node1.right, node2.right)
+
+    def HasSubtree(self, pRoot1, pRoot2):
+        flag = False
+        if pRoot1 and pRoot2:
+            if pRoot1.val == pRoot2.val:  # 找到一个节点相同，就去判断以此节点为根节点的的结构
+                flag = self.helper(pRoot1, pRoot2)
+            if not flag: # 如果未找到，就判断左孩子
+                flag = self.HasSubtree(pRoot1.left, pRoot2)
+            if not flag: # 同上
+                flag = self.HasSubtree(pRoot1.right, pRoot2)
+        return flag
+```
+思路：遍历二叉树中的每个节点，如果与待比较的节点相同，就用辅助函数判断其左右孩子是否相同，递归判断。注意的是：helper函数中的前两个if顺序不能换，要是换的话，得加判断条件，宗旨就是：如果node2比较完了，就返回True；如果node2没比较完，node1却比较完了，就返回False
+
+* 剑指Offer（十八）：二叉树的镜像
+```python
+class Solution:
+    # 返回镜像树的根节点
+    def Mirror(self, root):
+        # write code here
+        if not root:
+            return root
+        root.left, root.right = root.right, root.left
+        self.Mirror(root.left)
+        self.Mirror(root.right)
+        return root
+```
+思路：交换的时候，子节点下面的节点也交换了，画个图就知道每次其实只用交换节点的left和right即可. [Leetcode101](https://github.com/MissAquarius/ForJobHunting/blob/master/%E7%AE%97%E6%B3%95%E9%83%A8%E5%88%86/DFS%E4%B8%8EBFS.md)是类似题目，那个是判断是否是对称树。
+
+* 剑指Offer（二十二）：从上往下打印二叉树
+```python
+# -*- coding:utf-8 -*-
+import collections
+class Solution:
+    # 返回从上到下每个节点值列表，例：[1,2,3]
+    def PrintFromTopToBottom(self, root):
+        # write code here
+        if not root:
+            return []
+        q = collections.deque()
+        q.append(root)
+        res = []
+        while q:
+            node = q.popleft()
+            res.append(node.val)
+            if node.left:
+                q.append(node.left)
+            if node.right:
+                q.append(node.right)
+        return res
+```
+思路：二叉树的BFS算法
+
+* 剑指Offer（二十四）：二叉树中和为某一值的路径
+```python
+
+```
+思路：暂时没看懂
+
+* 剑指Offer（三十八）：二叉树的深度
+```python
+class Solution:
+    def TreeDepth(self, pRoot):
+        # write code here
+        if not pRoot:
+            return 0
+        left_height = self.TreeDepth(pRoot.left)
+        right_height = self.TreeDepth(pRoot.right)
+        height = max(left_height, right_height) + 1
+        return height
+```
+思路：leetcode原题，递归即可
+
+* 剑指Offer（三十九）：平衡二叉树
+```python
+class Solution:
+    def FindHeight(self, node):
+        if not node:
+            return 0
+        left = self.FindHeight(node.left)
+        right = self.FindHeight(node.right)
+        return  max(left, right) + 1
+    
+    def IsBalanced_Solution(self, pRoot):
+        # write code here
+        if not pRoot:
+            return True
+        left_height = self.FindHeight(pRoot.left)
+        right_height = self.FindHeight(pRoot.right)
+        return abs(left_height - right_height) <= 1 and self.IsBalanced_Solution(pRoot.left) and self.IsBalanced_Solution(pRoot.right)
+```
+平衡二叉树：它是一棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树<br>
+思路：根据定义，从根节点开始，求其左右子树的高度,返回高度差，并把子树递归判断。这样做，会导致额外的计算，比如对子树重复遍历：在求左右子树的高度的时候遍历一次，再判断左右子树是否是平衡二叉树的时候又遍历一次，所以可以考虑在计算子树高度的时候就判断子树是否是平衡二叉树，如果子树不是平衡树，返回-1；如果是的话，返回高度。<br>
+```python
+# 优化后：从下往上
+# -*- coding:utf-8 -*-
+class Solution:
+    def FindDepth(self, node):
+        if not node:
+            return 0
+        
+        left = self.FindDepth(node.left)
+        if left == -1:  # 加这个判断是为了提早结束，比如发现左子树不是平衡二叉树的时候，就结束比较
+            return -1
+        
+        right = self.FindDepth(node.right)
+        if right == -1:
+            return -1
+        
+        if abs(left-right) > 1:
+            return -1
+        else:
+            return max(left, right) + 1
+    
+    def IsBalanced_Solution(self, pRoot):
+        # write code here
+        return self.FindDepth(pRoot) != -1  
+```
+
+
+
 ## 二叉搜索树
 
 ## 数组
