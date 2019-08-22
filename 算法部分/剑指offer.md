@@ -351,7 +351,24 @@ class Solution:
 
 * 剑指Offer（二十四）：二叉树中和为某一值的路径
 ```python
-
+class Solution:
+    # 返回二维列表，内部每个列表表示找到的路径
+    def dfs(self, node, target, arr):
+        if not node.left and not node.right and node.val == target:
+            self.res.append(arr + [node.val])
+        if node.left:
+            self.dfs(node.left, target - node.val, arr+[node.val])
+        if node.right:
+            self.dfs(node.right, target - node.val, arr+[node.val])
+            
+    def FindPath(self, root, expectNumber):
+        # write code here
+        self.res = []
+        if not root:
+            return self.res
+        self.dfs(root, expectNumber,[])
+        self.res.sort(key = lambda x : len(x), reverse=True)
+        return self.res
 ```
 思路：暂时没看懂
 
