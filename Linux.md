@@ -154,6 +154,7 @@
   * 文件或目录的属性
   ![image](https://github.com/MissAquarius/ForJobHunting/blob/master/image/linux%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7.png)
   * 对应： 索引节点inode 文件种类和权限 硬链接个数 属主 组主 大小 最后修改/访问时间 文件名或目录名
+
 ## 打包与压缩命令
 * tar 打包命令：将多个文件合并成一个文件
   * 参数：
@@ -227,12 +228,13 @@
     * du -sh dirname/filename # 显示当前目录下的指定目录或文件的大小
     * ls -l # 也可查看目录或文件的大小
 ## 其他
-* top：动态显示当前系统正在执行的进程的相关信息，包括进程ID、内存占用率、CPU占用率等
+* free：显示内存使用情况
+* top：动态显示当前系统正在执行的进程的相关信息，包括进程ID、内存占用率、CPU占用率等（CPU使用情况）
+
 * ps： 静态显示系统中正在执行的进程信息
   * 例子：ps -a 显示所有进程信息；ps -ef|grep ssh 与grep连用，查找指定进程信息；ps aux 列出目前所有的正在内存中的程序
 * kill：杀死进程：
  进程的五种状态：运行R/中断S/不可中断D/僵死Z/停止T
-* free：显示系统使用和空闲的内存情况
 * ifconfig：查看和配置网络设备
 * route：显示与操作IP路由表
 * traceroute：追踪网络数据包的路由途径
@@ -257,6 +259,7 @@
  * 例子： 将 file 中的所有小写字母转为大写字母 ``` cat filename | tr [:lower:] [:upper:]  ```
 * scp：远程拷贝文件，使用ssh加密传输，更安全
 * rcp：远程拷贝文件，是scp的弱化版，不安全
+
 ## Linux三剑客
 * sed：
   * sed是一种流编辑器，是一个文本编辑工具，实现数据的替换，删除，增加，选取等(以行为单位进行处理)
@@ -375,6 +378,7 @@ mkfs.ext4 /dev/sda3
   ```
   例子：
   查看占用 80 端口的进程信息： ```  netstat -anp | grep 80 ```
+
 * 进程分配
   * Linux 内核使用位图为进程分配 pid，数据结构为 pidmap-array。 <br>
       位图算法：特点是生成的是整数，而且唯一，限定在某个范围内。内核使用了一个大的位图，其中每个 pid 由一个比特标识，分配一个空闲的 pid，       本质上等同于找出位图中第一个值为 0 的比特，接下来将其置为 1，释放时由 1 置为 0.  <br>
@@ -391,6 +395,7 @@ mkfs.ext4 /dev/sda3
     2. 子进程在 exit() 后并非马上消失，而是留下一个僵尸进程(zombie)的数据结构，等待父进程处理。若父进程没来得及处理，用 ps 查看子进程会显示状态 “Z”
     3. 系统能使用的进程号有限，如果产生大量僵尸进程，就可能因为没有可用进程号而不能产生新进程。
     4. 消灭僵尸进程： kill 父进程，那僵尸进程将变为孤儿进程，由 init 收养，init 会释放僵尸进程占用的资源。
+
 * crontab 定时: cron程序实现周期性任务的自动执行
 
 # 网络管理
@@ -440,13 +445,16 @@ mount: 磁盘挂载使用 mount 命令，卸载使用 umount 命令。 mount [-t
 
 
 # 概念性高频问题
-* 查看XXX进程：```ps aux | grep xxx, pstree, top ```
-* 找到共用80端口的进程 ```netstate -anp | grep 80 ```
-* 查看某个进程的端口号
-  ```
-  netstate -anp | grep xxx  
-  lsof - i: 80  
-  ```
+* 查看XXX进程：```ps aux | grep xxx,  ps -ef | grep xxx, pstree, top ```
+* 杀掉进程： ``` kill -9 pid ``` 如果pid没有直接给的话，先用查看进程的方式找出来
+* 查看某个端口是否被占用 ```netstate -tunlp | grep 80 ``` 状态为listen表示被占用
+* 查看进程所占用的端口 ``` netstate -anp | grep pid  ```
+* 查看系统有几颗物理CP及其核数 
+   ```
+   cat /proc/cpuinfo | grep -c 'physical id'
+   cat /proc/cpuinfo | grep -c 'processor'  
+   ```
+* free
 * top： 用于实施监控 linux 系统状况，可以查看 cpu、内存、进程、运行时间等
 * Kill -9 和 kill的区别 
   * kill 用法： kill -n pid, -n 是信号编号
@@ -479,6 +487,7 @@ mount: 磁盘挂载使用 mount 命令，卸载使用 umount 命令。 mount [-t
     * 查看软链接文件，查看的文件不存在
     * 硬链接文件正常查看
     * 原因：i节点是文件和目录的唯一标识，每个文件和目录必有i节点. 硬链接和源文件对应的是同一个i节点。删除源文件，只是删除i节点到源文件的映射关系，而i节点到硬链接的映射关系还在，这也解释了为什么硬链接可以和源文件同步更新。
+
 * Linux 下命令有哪几种可使用的通配符？分别代表什么含义?
   * “？”可替代单个字符。
   * “* ”  可替代任意多个字符。
@@ -509,3 +518,18 @@ mount: 磁盘挂载使用 mount 命令，卸载使用 umount 命令。 mount [-t
 * 怎样一页一页地查看一个大文件的内容呢？ -- 通过管道将命令”cat file_name.txt” 和 ’more’ 连接在一起可以实现这个需要,即: cat file_name.txt | more
 * linux 内核版本号： 主版本号.次版本号.末版本号  其中中间版本号为奇数的表示是开发和测试版本，偶数表示稳定版本
 * 什么叫做守护进程？ --守护进程(Daemon)是一类在后台运行的特殊进程，用于执行特定的系统任务。很多守护进程在系统引导的时候启动，并且一直运行直到系统关闭。（比如退出微信，还能收到消息）
+
+* 统计文本中每个单词出现的次数
+
+cat word.txt | awk '{a[$0]++} END{for (i in a) print i"="a[i]}' # 每行是一个单词
+如果每行是一个单词，那么直接可以：
+
+cat word.txt | sort | uniq -c
+
+* 统计出现频率最多的 3 个单词
+cat word.txt | awk '{a[$0]++} END{for (i in a) print i" "a[i]}' | sort -k2rn | head -3 
+# -r 倒序； -k2 按照第 2 个字段排序，也就是 a[i]； -n 按照数值排序
+
+* 统计一个文件中出现次数最多的 ip， 文本第二个字段是 ip
+cat ip.txt | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 1
+# uniq 命令用于检查及删除文本文件中重复出现的行列，一般与 sort 命令结合使用, -c或--count 在每列旁边显示该行重复出现的次数。
