@@ -370,7 +370,6 @@ class Solution:
         self.res.sort(key = lambda x : len(x), reverse=True)
         return self.res
 ```
-思路：暂时没看懂
 
 * 剑指Offer（三十八）：二叉树的深度
 ```python
@@ -431,12 +430,235 @@ class Solution:
         # write code here
         return self.FindDepth(pRoot) != -1  
 ```
+* 剑指Offer（五十七）：二叉树的下一个结点
+```python
+# -*- coding:utf-8 -*-
+# class TreeLinkNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+#         self.next = None
+class Solution:
+    def GetNext(self, pNode):
+        if pNode.right: 
+            cur = pNode.right
+            while cur.left:
+                cur = cur.left
+            return cur
+        else:
+            while pNode.next:
+                if pNode.next.left == pNode:
+                    return pNode.next
+                pNode = pNode.next
+            return None
+```
+next 指针指向父节点
+思路： 
+  1. 如果该节点有右子树，就返回右子树的最左边的叶子节点
+  2. 如果没有右子树，判断该节点是父节点的左孩子，是的话，返回父节点； 不是的话，就沿着父节点向上查找，直到找到一个节点是它父亲的左孩子，返回父亲节点。情况可以合并。  没有这样的节点的时候，返回空。
 
+* 剑指Offer（五十八）：对称的二叉树
+```python
+# -*- coding:utf-8 -*-
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+class Solution:
+    def fun(self, node1, node2):
+        if not node1 and not node2:
+            return True
+        if (node1 and not node2) or (not node1 and node2):
+            return False
+        if node1.val == node2.val:
+            return self.fun(node1.left, node2.right) and self.fun(node1.right, node2.left)
+        else:
+            return False
+    def isSymmetrical(self, pRoot):
+        # write code here
+        if not pRoot:
+            return True
+        return self.fun(pRoot.left, pRoot.right)
+```
+左右子树分别比较，注意几种特殊情况
 
+* 剑指Offer（五十九）：按之字顺序打印二叉树
+```python
+import collections
+class Solution:
+    def Print(self, pRoot):
+        # write code here
+        if not pRoot:
+            return []
+        q = collections.deque()
+        q.append(pRoot)
+        res = []
+        flag = True
+        while q:
+            size = len(q)
+            temp = []
+            for i in range(size):
+                node = q.popleft()
+                temp.append(node.val)
+                if node.left:
+                    q.append(node.left)
+                if node.right:
+                    q.append(node.right)
+            if not flag:
+                temp.reverse()
+            res.append(temp)
+            flag = not flag
+        return res
+```
+同下一题，只是每行打印的时候，用一个flag判断方向<br>
+
+* 剑指Offer（六十）：把二叉树打印成多行
+```python
+import collections
+class Solution:
+    # 返回二维列表[[1,2],[4,5]]
+    def Print(self, pRoot):
+        # write code here
+        if not pRoot:
+            return []
+        q = collections.deque()
+        q.append(pRoot)
+        res = []
+        while q:
+            size = len(q)
+            temp = []
+            for i in range(size):
+                node = q.popleft()
+                temp.append(node.val)
+                if node.left:
+                    q.append(node.left)
+                if node.right:
+                    q.append(node.right)
+            res.append(temp)
+        return res
+```
+打印的时候，用长度去限制打印同一行
+
+* 剑指Offer（六十一）：序列化二叉树
+```python
+class Solution:
+    def __init__(self):
+        self.serial = []
+    def Serialize(self, root):
+        # write code here
+        if not root:
+            self.serial.append('#')
+        else:
+            self.serial.append(str(root.val))
+            self.Serialize(root.left)
+            self.Serialize(root.right)
+        return ' '.join(self.serial)
+    
+    def Deserialize(self, s):
+        serial = s.split()
+        def dePre():
+            val = serial.pop(0)
+            if val == "#":
+                return None
+            node = TreeNode(int(val))
+            node.left = dePre()
+            node.right = dePre()
+            return node
+        return dePre()
+```
+没太看懂这个split是在干啥的，没有样例，不知道到底是要搞成啥样？
 
 ## 二叉搜索树
+剑指Offer（二十三）：二叉搜索树的后序遍历序列
+```python
+# -*- coding:utf-8 -*-
+   
+class Solution:
+    def helper(self, sequence):
+        if len(sequence) < 2:
+            return True
+        i = 0
+        left, right = [], []
+        while i < len(sequence) and sequence[i] < sequence[-1]:
+            left.append(sequence[i])
+            i += 1
+        right = sequence[i:-1]
+        for j in range(len(right)):
+            if right[j] < sequence[-1]:
+                return False
+        return self.helper(left) and self.helper(right)
+    
+    def VerifySquenceOfBST(self, sequence):
+        # write code here
+        if not sequence:
+            return False
+        return self.helper(sequence)
+    
+```
+思路： 对于 BST，后序遍历的最后一个数字是根节点，BST 左子树的所有节点都比根节点小，右子树的所有节点都比根节点大，因此对前面的元素与根节点大小比较，可以把该序列分成左、右子树两部分。然后再递归判断左右子树的结构是否符合。当有元素违背 BST 的规则时，则返回 False。  当遇到第一个比 sequence[-1] 更大的数时就将数组分成左右两个部分。
+
+剑指Offer（二十六）：二叉搜索树与双向链表
+```python
+
+```
+
+剑指Offer（六十二）：二叉搜索树的第k个结点
+```python
+
+```
+
 
 ## 数组
+* 剑指Offer（一）：二维数组中的查找
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    # array 二维列表
+    def Find(self, target, array):
+        # write code here
+        i, j = len(array)-1, 0
+        while i >= 0 and j < len(array[0]):
+            if target > array[i][j]:
+                j += 1
+            elif target < array[i][j]:
+                i -= 1
+            else:
+                return True
+        return False
+```
+思路：从左下角或者右上角开始，如果从左下角开始，当前值小于target，说明j要右移；大于的话，i要上移动
+
+* 剑指Offer（六）：旋转数组的最小数字
+剑指Offer（十三）：调整数组顺序使奇数位于偶数前面
+* 剑指Offer（二十八）：数组中出现次数超过一半的数字
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def MoreThanHalfNum_Solution(self, numbers):
+        # write code here
+        d = {}
+        for i in range(len(numbers)):
+            if numbers[i] in d:
+                d[numbers[i]] += 1
+            else:
+                d[numbers[i]] = 1
+        for key, value in d.items():
+            if value > len(numbers)// 2:
+                return key
+        return 0
+```
+思路：边遍历边计数
+
+
+剑指Offer（三十）：连续子数组的最大和
+剑指Offer（三十二）：把数组排成最小的数
+剑指Offer（三十五）：数组中的逆序对
+剑指Offer（三十七）：数字在排序数组中出现的次数
+剑指Offer（四十）：数组中只出现一次的数字
+剑指Offer（五十）：数组中重复的数字
+剑指Offer（五十一）：构建乘积数组
 
 ## 字符串
 
