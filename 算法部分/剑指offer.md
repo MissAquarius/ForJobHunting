@@ -698,6 +698,7 @@ class Solution:
 思路：从左下角或者右上角开始，如果从左下角开始，当前值小于target，说明j要右移；大于的话，i要上移动
 
 * 剑指Offer（六）：旋转数组的最小数字
+```python
 class Solution:
     def minNumberInRotateArray(self, rotateArray):
         if not rotateArray:
@@ -714,6 +715,7 @@ class Solution:
             else:
                 left += 1  # left >= mid >= right
         return rotateArray[left]
+```
 思路：二分查找，时间复杂度 O(logn)
   1. left < right：说明序列不是旋转，是递增的，直接返回left值；
   2. left < mid： 说明左边有序，小的数字在右边，mid肯定不是
@@ -764,8 +766,12 @@ class Solution:
                 return key
         return 0
 ```
-思路：边遍历边计数
+思路一：边遍历边计数
 
+```python
+
+```
+思路二：
 
 剑指Offer（三十）：连续子数组的最大和
 ```python
