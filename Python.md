@@ -156,3 +156,91 @@ def f ():
 ## 内存管理
 
 ## 进程、线程、协程
+
+## 下划线遍历
+* 单前导下划线 _var：以单个下划线开头的变量或方法仅供内部使用,它通常不由Python解释器强制执行，仅仅作为一种对程序员的提示
+```python
+class Test:
+    def __init__(self):
+        self.foo = 11
+        self._bar = 23
+t = Test()
+t.foo # 11
+t._bar # 23,仅是一个约定，其实还是可以访问，但是影响点在于模块的导入
+```
+模块导入：如果使用通配符从模块中导入所有名称如：from module import * ，则Python不会导入带有前导下划线的名称；如果是常规导入，如：import module ， 则不受影响
+
+* 单末尾下划线 var_: 一个变量的最合适的名称已经被一个关键字所占用，如：像class或def这样的名称不能用作Python中的变量名称，在这种情况下，可以附加一个下划线来解决命名冲突：
+```python
+def make_object(name, class):  # 报错：语法错误
+def make_object(name, class_): # 可以
+```
+* 双前导下划线 __var： 双下划线前缀会导致Python解释器重写属性名称，以避免子类中的命名冲突，即：名称修饰，解释器更改变量的名称，以便在类被扩展的时候不容易产生冲突
+```python
+class Test:
+    def __init__(self):
+        self.foo = 11
+        self._bar = 22
+        self.__baz = 23
+t = Test()
+t.foo # 11
+t._bar # 22
+t.__baz  # AttributeError: 'Test' object has no attribute '__baz'
+t._Test__baz # 23
+```
+_Test__baz 是Python解释器所做的名称修饰， 它这样做是为了防止变量在子类中被重写。如：
+
+```python
+class Test:
+    def __init__(self):
+        self.foo = 11
+        self._bar = 22
+        self.__baz = 23
+
+class ExtendedTest(Test):
+    def __init__(self):
+        super().__init__()
+        self.foo ='ovetwriteen'
+        self._bar = 'overwriteen'
+        self.__baz = 'overwriten'
+t2 = ExtendedTest()
+t2.foo  # ovetwriteen
+t2._bar  # ovetwriteen
+t2._ExtendedTest__baz # ovetwriteen
+t2._Test__baz  # 23
+```
+
+双下划线名称修饰对程序员是完全透明:
+```python
+class Test:
+    def __init__(self):
+        self.__mangled = 'hello'
+
+    def get(self):
+        return self.__mangled
+print(Test().get()) # hello
+
+------ 以下也是可以的 ------
+_Test__mangled = 23
+
+class Test:
+    def get(self):
+        return __mangled
+
+print(Test().get()) # 23
+```
+* 双前导和双末尾下划线 __var__: 由双下划线前缀和后缀包围的变量不会被Python解释器修改, 用于系统定义，有特殊用途
+```python
+__init__ # 构造函数
+__call__ # 使一个对象可以被调用
+```
+
+
+* 单下划线 _ :用作一个名字，表示某个变量是临时的或者无关紧要的； 或者表示最近一个使用的变量或者表达式的结果
+```python
+arrs = [0 for _ in range(5)]  # 临时变量
+
+20 + 3 # 23
+_ # 23
+
+```
