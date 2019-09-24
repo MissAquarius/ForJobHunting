@@ -76,7 +76,7 @@ GET方式只能支持ASCII字符，向服务器传的中文字符可能会乱码
   ---------- | :-----------:  
   Accept     | 客户端可识别的内容类型      
   Referer     | 从哪个页面链接过来的    
-  ser-Agent     | 产生请求的浏览器类型    
+  user-Agent     | 产生请求的浏览器类型    
   Host     | 请求的主机名     
   Connection     | 是否需要持久连接 
   Cookie     | 浏览器保存的cookie信息，发送请求时会自动把该域名下的cookie值一起发给wdb服务器     
