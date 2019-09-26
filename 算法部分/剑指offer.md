@@ -980,8 +980,31 @@ class Solution:
 
 ## 字符串
 剑指Offer(二)：替换空格
+```python
+
+
+```
 剑指Offer（二十七）：字符串的排列
 剑指Offer（三十四）：第一个只出现一次的字符
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def FirstNotRepeatingChar(self, s):
+        # write code here
+        d = {}
+        for ss in s:
+            if ss in d:
+                d[ss] += 1
+            else:
+                d[ss] = 1
+        for i in range(len(s)):
+            if d[s[i]] == 1:
+                return i
+                
+        return -1
+```
+计数+遍历
+
 剑指Offer（四十三）：左旋转字符串
 剑指Offer（四十四）：翻转单词顺序序列
 剑指Offer（四十九）：把字符串转换成整数
@@ -1151,7 +1174,31 @@ class Solution:
 剑指Offer（十九）：顺时针打印矩阵
 剑指Offer（二十九）：最小的K个数
 剑指Offer（三十一）：整数中1出现的次数（从1到n整数中1出现的次数）
-剑指Offer（三十三）：丑数
+* 剑指Offer（三十三）：丑数
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def GetUglyNumber_Solution(self, index):
+        # write code here
+        if index < 7:
+            return index
+        p2, p3, p5, = 0, 0, 0
+        arrs = [0 for _ in range(index)]
+        arrs[0] = 1
+        for i in range(1, index):
+            arrs[i] = min(arrs[p2] * 2, arrs[p3] * 3, arrs[p5] * 5)
+            if arrs[i] == arrs[p2] * 2:
+                p2 += 1
+            if arrs[i] == arrs[p3] * 3:
+                p3 += 1
+            if arrs[i] == arrs[p5] * 5:
+                p5 += 1
+        return arrs[-1]
+```
+思路：
+  1. 6以内的丑数就是自己：[0-6]
+  2. 丑数只可能由之前的丑数 * 2， * 3 或 * 5 得到，且下一个最小的丑数，只能在（某个数 * 2， 某个数 * 3， 某个数 * 5）中产生。 p2, p3, p5 其实相当于三个指针，分别指向 *2 ， *3， *5的数字中的最小值，每次取得了之后，判断是在哪个中取得，指针后移（即下次从新的丑数中去算）。
+
 剑指Offer（四十一）：和为S的连续正数序列
 剑指Offer（四十二）：和为S的两个数字
 剑指Offer（四十五）：扑克牌顺子
