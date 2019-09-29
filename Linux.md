@@ -476,7 +476,7 @@ mount: 磁盘挂载使用 mount 命令，卸载使用 umount 命令。 mount [-t
 * 查找当前目录下名字带有abc的文件 ``` find . -name '*abc' - type f ```
 * 递归删除指定后缀名的文件，如.txt 
   ``` 
-  find . -name '.txt' -exec rm -f {} \;
+  find . -name '.txt' -exec rm -fr {} \;
   ``` 
 
 * 硬链接与软链接
