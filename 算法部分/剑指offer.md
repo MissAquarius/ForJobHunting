@@ -571,7 +571,7 @@ class Solution:
 没太看懂这个split是在干啥的，没有样例，不知道到底是要搞成啥样？
 
 ## 二叉搜索树
-剑指Offer（二十三）：二叉搜索树的后序遍历序列
+* 剑指Offer（二十三）：二叉搜索树的后序遍历序列
 ```python
 # -*- coding:utf-8 -*-
    
@@ -599,7 +599,7 @@ class Solution:
 ```
 思路： 对于 BST，后序遍历的最后一个数字是根节点，BST 左子树的所有节点都比根节点小，右子树的所有节点都比根节点大，因此对前面的元素与根节点大小比较，可以把该序列分成左、右子树两部分。然后再递归判断左右子树的结构是否符合。当有元素违背 BST 的规则时，则返回 False。  当遇到第一个比 sequence[-1] 更大的数时就将数组分成左右两个部分。
 
-剑指Offer（二十六）：二叉搜索树与双向链表
+* 剑指Offer（二十六）：二叉搜索树与双向链表
 ```python
 class Solution:
     def Convert(self, pRootOfTree):
@@ -652,7 +652,7 @@ class Solution:
 
 设置两个指针 pHead 和 pEnd 分别指向转换后的双向链表的表头和表尾，首先找到链表的第一个节点，也就是 BST 最左边的节点，此时 pHead 和 pEnd 都还是 None，因此把 pHead 和 pEnd 都指向第一个节点，当遍历到下一个节点时，就需要调整指针的指向，链表中最后一个节点 pEnd 的下一个节点应该是当前节点，当左子树转化完成后，就对右子树进行相同的转换。 整个过程就相当于中序遍历，只是中间改成了指针的调整
 
-剑指Offer（六十二）：二叉搜索树的第k个结点
+* 剑指Offer（六十二）：二叉搜索树的第k个结点
 ```python
 # -*- coding:utf-8 -*-
 class Solution:
@@ -722,7 +722,7 @@ class Solution:
   3. mid < rigt: 说明右边有序，小的数字在左边，mid可能是
   4. left >= mid >= right ： left右移，缩小范围
 
-剑指Offer（十三）：调整数组顺序使奇数位于偶数前面
+* 剑指Offer（十三）：调整数组顺序使奇数位于偶数前面
 ```python
 # -*- coding:utf-8 -*-
 class Solution:
@@ -788,7 +788,7 @@ class Solution:
 思路二：
 摩尔投票法，同加异减的思想，注意最后需要判断选出来的数字是否符合条件，因为可能不存在
 
-剑指Offer（三十）：连续子数组的最大和
+* 剑指Offer（三十）：连续子数组的最大和
 ```python
 class Solution:
     def FindGreatestSumOfSubArray(self, array):
@@ -804,7 +804,7 @@ class Solution:
 ```
 dp[i]表示以i结尾的连续子数组的最大长度
 
-剑指Offer（三十二）：把数组排成最小的数
+* 剑指Offer（三十二）：把数组排成最小的数
 ```python
 # -*- coding:utf-8 -*-
 import functools  # py3需要
@@ -827,7 +827,7 @@ class Solution:
 str -> list： list(s) <br>
 list -> str: ''.join(l) 要求list中的每个元素必须是str类型的，如果是int要先转换  <br>
 
-剑指Offer（三十五）：数组中的逆序对
+* 剑指Offer（三十五）：数组中的逆序对
 ```python
 # -*- coding:utf-8 -*-
 class Solution:
@@ -871,9 +871,108 @@ class Solution:
 开辟一个辅助数组 tmp，每次把比较中较小的数字添加到 tmp 中，确保其是从小到大排序的。
 以上思想类似于归并排序： 先将数组拆分为长度为 1 的子数组，两两合并子数组并统计出相邻两个子数组之间逆序对的个数，合并过程中需要对两个子数组进行排序。
 
-剑指Offer（三十七）：数字在排序数组中出现的次数
+* 剑指Offer（三十七）：数字在排序数组中出现的次数
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    # 二分查找
+    def FindK(self, data, k):
+        left, right = 0, len(data) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if data[mid] < k:
+                left = mid + 1
+            elif data[mid] > k:
+                right = mid - 1
+            else:
+                return mid
+        return -1 
+    def GetNumberOfK(self, data, k):
+        # write code here
+        size = len(data)
+        loc = self.FindK(data, k)
+        
+        if loc == -1:
+            return 0
+        else:
+            cnt = 1
+            tmp = loc - 1
+            while tmp > -1  and data[tmp] == k: # 左边计数
+                cnt += 1
+                tmp -= 1
+                
+            tmp = loc + 1
+            while tmp < size and data[tmp] == k: # 右边计数
+                cnt += 1
+                tmp += 1
+        return cnt
+```
+我的思路：看到数组有序，就用二分查找，找到k出现的位置。然后从该位置分别往左右两边遍历计数，最后放回。
 
-剑指Offer（四十）：数组中只出现一次的数字
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def FindK(self, data, k):
+        left, right = 0, len(data) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if data[mid] < k:
+                left = mid + 1
+            if data[mid] > k:
+                right = mid - 1
+        return left 
+    def GetNumberOfK(self, data, k):
+        # write code here
+        size = len(data)
+        loc1 = self.FindK(data, k - 0.5)  # 寻找k - 0.5应该插入的位置
+        loc2 = self.FindK(data, k + 0.5)  # 寻找k + 0.5应该插入的位置
+        return loc2 - loc1 
+```
+别人的解法一：因为数组中都是整数，所以寻找k+-0.5的插入点，两个插入点之间的整数都是k
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    # 这个函数可单独拿出来当一道算法题：在排序数组中找到重复数字第一次出现的位置
+    def FindStartLoc(self, data, k): 
+        left, right = 0, len(data) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if data[mid] >= k:
+                right = mid - 1
+            else:
+                left = mid + 1
+        # 找不到的两种情况： 要查找的k值比最后一个数字都大， 使得left越界（left == len(data) ) or 要查找的数字比第一个数# 字都小，left指针始终未动，而right指针始终前移（right == -1）
+        if left >= len(data) or data[left] != k:  
+            return 0
+        return left 
+
+    # 这个函数可单独拿出来当一道算法题：在排序数组中找到重复数字最后一次出现的位置
+    def FindEndLoc(self, data, k):
+        left, right = 0, len(data) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if data[mid] <= k:
+                left = mid + 1
+            else:
+                right = mid - 1
+        # 找不到，同上
+         if left >= len(data) or data[left] != k:  
+            return 0
+        return right 
+    
+    def GetNumberOfK(self, data, k):
+        # 此题有漏洞，没有说清楚数组是升序还是降序，默认按照升序处理了
+        start = self.FindStartLoc(data, k)
+        end = self.FindEndLoc(data, k)
+        return end - start + 1
+```
+别人的解法二：看到排序数组，就应该考虑是否可以用二分查找来解决，可以找到这个数字第一次出现的位置和最后一次出现的位置，end-start+1 就是数字出现的次数。
+
+注意找不到时的特殊情况，可能是最左边也可能最右边，left 会比 right 更大 1，要是在左边就要判断找到的 data[left] 是否等于 k，要是在右边就要判断 left 是否越界。
+
+
+* 剑指Offer（四十）：数组中只出现一次的数字
 1. 如果是只有一个数字出现一次，其余都是两次，可以用异或来找到:相同的数字异或为0， 与0异或还是数字本身
 ```python
 def helper(arrs):
@@ -924,7 +1023,7 @@ class Solution:
 
 依照这个思路，我们来看两个数（我们假设是AB）出现一次的数组。我们首先还是先异或，剩下的数字肯定是A、B异或的结果，这个结果的二进制中的1，表现的是A和B的不同的位。我们就取第一个1所在的位数，假设是第3位，接着把原数组分成两组，分组标准是第3位是否为1。如此，相同的数肯定在一个组，因为相同数字所有位都相同，而不同的数，肯定不在一组。然后把这两个组按照最开始的思路，依次异或，剩余的两个结果就是这两个只出现一次的数字。<br>
 
-剑指Offer（五十）：数组中重复的数字
+* 剑指Offer（五十）：数组中重复的数字
 ```python
 class Solution:
     # 这里要特别注意~找到任意重复的一个值并赋值到duplication[0]
@@ -957,7 +1056,7 @@ class Solution:
 ```
 思路二：不使用额外的存储空间，因为0~n-1的下标，如果没有重复的话，按顺序存储的数据也是0~n-1的。从 i = 0 开始，当 nums[i] = i 时，i + 1；  不相等，则将 nums[i] 与第 nums[i] 的那个数字进行交换，然后再看 i = 0 这个位置上的数字是不是符合要求，当发现有两个数字到一个位置时，就找到了这个重复数字。时间复杂度为 O(n)，空间复杂度为 O(1)
 
-剑指Offer（五十一）：构建乘积数组
+* 剑指Offer（五十一）：构建乘积数组
 ```python
 # -*- coding:utf-8 -*-
 class Solution:
@@ -979,13 +1078,85 @@ class Solution:
 评论区画图，画出B[i]是由哪些元素相乘，推一下即可
 
 ## 字符串
-剑指Offer(二)：替换空格
+* 剑指Offer(二)：替换空格
 ```python
-
-
+# -*- coding:utf-8 -*-
+class Solution:
+    # s 源字符串
+    def replaceSpace(self, s):
+        # write code here
+        i = 0
+        while i < len(s):
+            if s[i] != ' ':
+                i += 1
+            else:
+                s = s[:i] + '%20' + s[i+1:]
+                i += 3
+        return s
 ```
-剑指Offer（二十七）：字符串的排列
-剑指Offer（三十四）：第一个只出现一次的字符
+我的思路：遍历s，遇到空格就用分片的方式替换
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    # s 源字符串
+    def replaceSpace(self, s):
+        # write code here
+        p1 = len(s) - 1
+        cnt = 0
+        for c in s:
+            if c == ' ':
+                cnt += 1
+        
+        s = list(s) + [None] * (cnt * 2)
+        p2 = len(s) - 1
+        while p1 > -1:
+            if s[p1] == ' ':
+                s[p2] = '0'
+                s[p2-1] = '2'
+                s[p2-2] = '%'
+                p2 -= 3
+            else:
+                s[p2] = s[p1]
+                p2 -= 1
+            p1 -= 1
+        return ''.join(s)
+                
+```
+别人的解法：
+  * 问题1： 是在当前字符串上替换，还是可以开辟一个新的字符串做替换？
+  * 问题2： 在当前字符串上替换，怎么做才能更有效率？ 从前往后替换的话，后面的字符要移动多次，效率低，时间复杂度为 O(n2); 而从后往前替换，先计算出需要增加多少空间，再从后往前移动，每个字符只需移动一次，时间复杂度为 O(n)。 <br>
+
+思路： 用两个指针，p1 指向原始字符串的末尾，p2 指向替换后的字符串的末尾； 当 p1 指向空格时，就将其替换为 %20，同时 p1 向前移动一格，p2 向前移动三格。 <br>
+
+步骤：
+  1. 计算原字符串长度，并统计空格数量
+  2. 新字符串长度 = 原字符串长度 + 空格数量 * 2
+  3. 在新字符串数组上，从后往前编辑，通过两个指针移动并复制
+
+* 剑指Offer（二十七）：字符串的排列
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def Permutation(self, ss):
+        # write code here
+        if not ss:
+            return []
+        res = []
+        size = len(ss)
+        def dfs(ss, string):
+            if len(string) > size:
+                return
+            if len(string) == size and string not in res:
+                res.append(string)
+                return 
+            for i in range(len(ss)):
+                dfs(ss[:i] + ss[i+1:], string + ss[i])
+        dfs(ss, '')
+        return res
+````
+
+* 剑指Offer（三十四）：第一个只出现一次的字符
 ```python
 # -*- coding:utf-8 -*-
 class Solution:
