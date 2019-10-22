@@ -1177,11 +1177,110 @@ class Solution:
 计数+遍历
 
 剑指Offer（四十三）：左旋转字符串
-剑指Offer（四十四）：翻转单词顺序序列
-剑指Offer（四十九）：把字符串转换成整数
-剑指Offer（五十二）：正则表达式匹配
-剑指Offer（五十三）：表示数值的字符串
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def LeftRotateString(self, s, n):
+        # write code here
+        if not s:
+            return s
+        size = len(s)
+        k = n % size
+        return s[k:] + s[:k]
+```
+思路：分片
 
+剑指Offer（四十四）：翻转单词顺序序列
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def ReverseSentence(self, s):
+        # write code here
+        tmp = s.split()
+        if not tmp:  # s = ' '
+            return s
+        return ' '.join(tmp[::-1])
+```
+思路：分片，倒序输出
+
+剑指Offer（四十九）：把字符串转换成整数
+```python
+# -*- coding:utf-8 -*-
+import math
+class Solution:
+    def StrToInt(self, s):
+        # write code here
+        if not s:
+            return 0
+
+        if s[0].isdigit():
+            tmp = s
+        elif s[0] == '+' or s[0] == '-':
+            tmp = s[1:]
+        else:
+            return 0
+        
+        res = 0
+        i, j = len(tmp)-1, 0
+        while i >= 0:
+            if tmp[i].isdigit():
+                res = res + (ord(tmp[i]) - ord('0')) * (10 ** j)
+                i -= 1
+                j += 1
+            else:
+                return 0
+
+        if s[0] == '-':
+            res =  -res
+        # 判断溢出,int范围是： -2147483648~2147483647
+        if res >=  -2147483648 and res <= 2147483647:
+            return res
+        else:
+            return 0 
+```
+思路：不能用int强制类型转换，因此可以用字符串的减法；或者构造一个列表['0', '1', '2'...]，用index函数获取下标。<br>
+注意判断溢出：int占4个字节，共有32位，第一位是符号位，所以取值范围是： -2147483648 ~ 2147483647
+
+剑指Offer（五十二）：正则表达式匹配
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    # s, pattern都是字符串
+    def match(self, s, pattern):
+        # write code here
+        if not s and not pattern:
+            return True
+        if s and not pattern:
+            return False
+        
+        if len(pattern) > 1 and pattern[1] == '*':
+            if s and (s[0] == pattern[0] or pattern[0] == '.'):
+                return self.match(s, pattern[2:]) or self.match(s[1:], pattern[2:]) or self.match(s[1:], pattern)
+            else:
+                return self.match(s, pattern[2:])
+        else:
+            if s and (s[0] == pattern[0] or pattern[0] == '.'):
+                return self.match(s[1:], pattern[1:])
+            else:
+                return False
+```
+思路：
+* 当第二个字符不是 * 时：
+  * 若字符串的第一个字符与模式的第一个字符匹配，则字符串和模式都向后移动一个字符，匹配后面的部分
+  * 若字符串的第一个字符与模式的第一个字符不匹配， return False
+* 当第二个字符是 * 时： 
+  * 若字符串的第一个字符与模式的第一个字符不匹配，则模式向后移动两个字符，字符串不动；
+  * 若字符串的第一个字符与模式的第一个字符匹配，则有以下三种匹配情况：
+    1. 模式向后移动两个字符，x* 被忽略,即匹配一次
+    2. 模式向后移动两个字符，字符串向后移动一个字符，匹配一次
+    3. 字符串向后移动一格字符，模式不变，继续向后匹配， * 匹配多次
+注意：小细节：如要有第二个字符，首先得满足长度大于1，以及在匹配中 s 为空的时候，不能引用s[0]
+
+
+剑指Offer（五十三）：表示数值的字符串
+```python
+
+```
 
 ## 栈
 剑指Offer（五）：用两个栈实现队列
@@ -1208,7 +1307,56 @@ class Solution:
 延伸的选择题：要是stack1的容量是 m ， stack2的容量是 n，m > n, 问能模拟的队列最长是：2 * n + 1
 
 剑指Offer（二十）：包含min函数的栈
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def __init__(self):
+        self.stack = []
+        self.minStack = []
+    def push(self, node):
+        # write code here
+        self.stack.append(node)
+        if not self.minStack or self.minStack[-1] > node:
+            self.minStack.append(node)
+        else:
+            self.minStack.append(self.minStack[-1])
+    def pop(self):
+        # write code here
+        self.stack.pop()
+        self.minStack.pop()
+    def top(self):
+        # write code here
+        return stack[-1]
+    def min(self):
+        # write code here
+        return self.minStack[-1]
+```
+思路：要求时间复杂度为 O(1), 因此需要一次得到最小值，因此要考虑用空间换时间。 <br>
+
+考虑使用一个辅助栈 min_stack，用来存储当前的最小值，每次都把当前的最小值压入 min_stack 中。 当 stack 需要出栈时，辅助栈中也需要同步出栈，这样就能保证若出栈的是最小值，那么辅助栈中就不能再保存最小值，然后就到了次小值。<br>
+
+重点： 用辅助栈保存当前最小值，并使两个栈大小相同，可以同步出栈<br>
+
 剑指Offer（二十一）：栈的压入、弹出序列
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def IsPopOrder(self, pushV, popV):
+        # write code here
+        stack = []
+        i = 0
+        while i < len(pushV):
+            stack.append(pushV[i])
+            while stack and popV and stack[-1] == popV[0]:
+                stack.pop()
+                popV.pop(0)
+            i += 1
+        if popV:
+            return False
+        else:
+            return True
+```
+思路： 用一个辅助栈，把输入的第一个序列的元素依次压入栈，再按照第二个序列的顺序依次出栈
 
 ## 递归
 剑指Offer（七）：裴波那契数列
@@ -1282,7 +1430,13 @@ class Solution:
 
 ## 回溯法
 剑指Offer（六十五）：矩阵中的路径
+```python
+
+```
 剑指Offer（六十六）：机器人的运动范围
+```python
+
+```
 
 ## 其他
 * 剑指Offer（二十九）：最小的K个数，要求输出的k个数是有序的
@@ -1343,8 +1497,53 @@ class Solution:
 剑指Offer（十一）：二进制中1的个数
 剑指Offer（十二）：数值的整数次方
 剑指Offer（十九）：顺时针打印矩阵
-剑指Offer（二十九）：最小的K个数
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    # matrix类型为二维列表，需要返回列表
+    def printMatrix(self, matrix):
+        # write code here
+        if not matrix:
+            return []
+        left, right, up, down = 0, len(matrix[0])-1, 0, len(matrix)-1 # 控制四个边界
+        size = len(matrix[0]) * len(matrix) # 判断是否都加进去了，防止只有一行时或者只有一列时重复加入
+        res = []
+        while left <= right and up <= down:
+            # 向右
+            for i in range(left, right+1):
+                if len(res) < size:
+                    res.append(matrix[up][i])
+            up += 1
+            # 向下
+            for j in range(up, down+1):
+                if len(res) < size:
+                    res.append(matrix[j][right])
+            right -= 1
+            # 向左
+            for m in range(right, left-1, -1):
+                if len(res) < size:
+                    res.append(matrix[down][m])
+            down -= 1
+            # 向上
+            for n in range(down, up-1, -1):
+                if len(res) < size:
+                    res.append(matrix[n][left])
+            left += 1
+            
+        return res
+```
+思路： 设置四个方向进行打印，向右，向下，向左，向上，但是必须要注意循环结束的终止条件。 首先第一层需要满足 left <= right and up <= down，其次需要分析每一次打印元素的前提条件，res 的长度必须小于矩阵的大小的时候，才打印。 <br>
+
+若没有 if len(res) < size 这个条件，就可能会出现重复打印的情况。比如只有一列的矩阵，[[1],[2],[3],[4],[5]] <br>
+
+首先 go right， res = [1]<br>
+然后 go down ，res = [1,2,3,4,5]<br>
+不会 go left，因此此时 left = 0, right = -1<br>
+此时 up = 1，down = 3，会继续 go up，res = [1,2,3,4,5,4,3,2], 最后循环终止。<br>
+这道题最重要的是： 确定循环终止条件， 确定打印的终止条件。<br>
+
 剑指Offer（三十一）：整数中1出现的次数（从1到n整数中1出现的次数）
+
 * 剑指Offer（三十三）：丑数
 ```python
 # -*- coding:utf-8 -*-
@@ -1372,9 +1571,38 @@ class Solution:
 
 剑指Offer（四十一）：和为S的连续正数序列
 剑指Offer（四十二）：和为S的两个数字
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def FindNumbersWithSum(self, array, tsum):
+        # write code here
+        i, j = 0, len(array) - 1
+        tmp = float('inf')
+        res = []
+        while i < j:
+            if array[i] + array[j] == tsum:
+                cal = array[i] * array[j]
+                if cal < tmp:
+                    tmp = cal
+                    res.append(array[i])
+                    res.append(array[j])
+                i += 1
+                j -= 1
+            elif array[i] + array[j] > tsum:
+                j -= 1
+            else:
+                i += 1
+
+        return res
+```
+
 剑指Offer（四十五）：扑克牌顺子
 剑指Offer（四十六）：孩子们的游戏（圆圈中最后剩下的数）
 剑指Offer（四十七）：求1+2+3+…+n
+```python
+
+```
+
 剑指Offer（四十八）：不用加减乘除的加法
 剑指Offer（五十四）：字符流中第一个不重复的字符
 剑指Offer（六十三）：数据流中的中位数
