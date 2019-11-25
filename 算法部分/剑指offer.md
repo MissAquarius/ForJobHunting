@@ -121,8 +121,49 @@ class Solution:
 ```
 * 剑指Offer（二十五）：复杂链表的复制
 ```python
-
+# -*- coding:utf-8 -*-
+# class RandomListNode:
+#     def __init__(self, x):
+#         self.label = x
+#         self.next = None
+#         self.random = None
+class Solution:
+    # 返回 RandomListNode
+    def Clone(self, pHead):
+        # write code here
+        if not pHead:
+            return None
+        # copy
+        cur = pHead
+        while cur:
+            node = RandomListNode(cur.label) 
+            node.next = cur.next
+            cur.next = node
+            cur = cur.next.next
+        # set random value
+        cur = pHead
+        while cur:
+            if cur.random:
+                cur.next.random = cur.random.next
+            cur = cur.next.next
+        # break nodelist
+        newHead = pHead.next
+        old, new = pHead, newHead
+        while new.next:
+            old.next = new.next
+            new.next = new.next.next
+            old = old.next
+            new = new.next
+        old.next = None
+        return newHead
+        
 ```
+思路1：如果先复制原始链表的每一个节点，并用指针链接起来；再设置每个节点的 random 指针。 原始链表的每个节点都需要遍历整个链表找到他的 random，那么新链表也需要 n 步找到 random 指向的节点，那么最终的时间复杂度是 O(n2)。<br>
+
+思路2：用空间换时间，分为三步走：<br>
+在原始链表的每个节点后面都插入一个新的节点，新节点的值与原来的相同<br>
+找到新节点的 random 指针指向的节点<br>
+将新链表从原始链表中拆出来<br>
 
 * 剑指Offer（三十六）：两个链表的第一个公共结点
 ```python
@@ -1154,7 +1195,7 @@ class Solution:
                 dfs(ss[:i] + ss[i+1:], string + ss[i])
         dfs(ss, '')
         return res
-````
+```
 
 * 剑指Offer（三十四）：第一个只出现一次的字符
 ```python
@@ -1279,8 +1320,39 @@ class Solution:
 
 剑指Offer（五十三）：表示数值的字符串
 ```python
-
+# -*- coding:utf-8 -*-
+class Solution:
+    # s字符串
+    def isNumeric(self, s):
+        # write code here
+        if not s:
+            return False
+        has_exp, has_sign, has_dot = False, False, False
+        for i in range(len(s)):
+            if s[i] == 'e' or s[i] == 'E':
+                if has_exp or i == len(s) - 1 or s[i+1] not in '-+1234567890':
+                    return False
+                has_exp = True
+            elif s[i] == '+' or s[i] == '-':
+                if i == len(s) - 1 or s[i+1] not in '.1234567890':
+                    return False
+                if i != 0 and s[i-1] not in 'eE':
+                    return False
+                has_sign = True
+            elif s[i] == '.':
+                if has_dot or has_exp or i == len(s)-1 or s[i+1] not in '0123456789':
+                    return False
+                has_dot = True
+            elif s[i] not in '0123456789':
+                return False
+        return True
+                
 ```
+思路：<br>
+设置三个变量 has_exp, has_dot, has_sign 分别记录是否出现过 e/E, 小数点, 正负号，然后依次遍历字符串 <br>
+遍历到 e 或 E，则 e 后面要有数字（可以有符号的），并 has_exp=True ， e 或 E 只能出现一次 <br>
+遍历到小数点'.'，则前面可以没有数字，但后面必须有数字（无符号），并 has_dot=True， 小数点只能出现一次，且小数点不能在 e 的后面出现 <br>
+遍历到正负号'+' 或 '-'，后面要接数字，且要么出现在开头，要么接在 e 或 E 的后面，has_sign=True，注意特殊情况如 '-.123' 或 '+.123' 是合法的，所以符号后面可以接小数点 <br>
 
 ## 栈
 剑指Offer（五）：用两个栈实现队列
